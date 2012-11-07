@@ -1,0 +1,5 @@
+
+2012-11-07 v2.1
+
+    - Fixed a bug where 'refresh_token' was not set in the signed session array. Basically fixing refresh logic.
+

@@ -66,7 +66,7 @@ class VGS_Client {
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_TIMEOUT => 30,
-            CURLOPT_USERAGENT => 'spid-php-2.0'
+            CURLOPT_USERAGENT => 'spid-php-2.1'
      );
 
     /**
@@ -1220,7 +1220,7 @@ class VGS_Client {
         return $session;
     }
 
-	/**
+    /**
      * Signs the session data
      *
      * @param 	Array Unsigned session
@@ -1235,6 +1235,7 @@ class VGS_Client {
             'access_token'    => $data['access_token'],
             'expires_in'      => $data['expires_in'],
             'server_time'     => $data['server_time'],
+            'refresh_token'   => $data['refresh_token'],
         );
         // put a real sig, so that validateSignature works
         $session['sig'] = self::generateSignature($session, $this->getClientSecret());
