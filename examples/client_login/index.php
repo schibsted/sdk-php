@@ -8,6 +8,9 @@
 <h1>SPiD Client user login and authentication example</h1>
 <?php
 
+// Start Session to save oauth token in session (instead of token)
+session_start();
+
 // May get credential errors
 if (isset($_GET['error'])) {
     echo '<h3 id="message" style="color:red">'.$_GET['error'].'</h3>';
@@ -20,29 +23,32 @@ define('BASE_DIR', realpath('../..'));
 require_once(BASE_DIR.'/src/Client.php');
 require_once(BASE_DIR.'/examples/config.php');
 // overwrite redirect url to be HERE
-$SPID_CREDENTIALS[VGS_Client::REDIRECT_URI] = "http://sdk.dev/examples/client_login";
+$SPID_CREDENTIALS[VGS_Client::REDIRECT_URI] = "http://{$_SERVER['HTTP_HOST']}/examples/client_login";
+$SPID_CREDENTIALS[VGS_Client::COOKIE] = false;
 
 // Instantiate the SDK client
 $client = new VGS_Client($SPID_CREDENTIALS);
 
 // When a logout redirect comes from SPiD, delete the local session
 if (isset($_GET['logout'])) {
-    $client->deleteSession();
+   unset($_SESSION['sdk']);
 }
-
-// Get/Check if we have local session, creates ones if code GET param comes
-$session = $client->getSession();
 
 // Code is part of the redirect back from SPiD, redirect to self to remove it from URL
 // since it may only be used once, and it has been used to create session
 if (isset($_GET['code'])) {
-    header( "Location: ".$SPID_CREDENTIALS[VGS_Client::REDIRECT_URI] ) ;
+    // Get/Check if we have local session, creates ones if code GET param comes
+    $_SESSION['sdk'] = $client->getSession();
+    header( "Location: ". $client->getCurrentURI(array(), array('code','login','logout'))) ;
     exit;
 }
 
+$session = isset($_SESSION['sdk']) ? $_SESSION['sdk'] : false;
 
 // If we have session, that means we are logged in.
 if ($session) {
+    // Authorize the client with the session saved user token
+    $client->setAccessToken($session['access_token']);
 
     // Try since SDK may throw VGS_Client_Exceptions:
     //   For instance if the client is blocked, has exceeded ratelimit or lacks access right
@@ -55,7 +61,18 @@ if ($session) {
 
     } catch (VGS_Client_Exception $e) {
         // API exception, show message, remove session as it is probably not usable
-        $client->setSession(null);
+        if ($e->getCode() == 401) {
+            // access denied, in case the access token is expired, try to refresh it
+            try {
+                // refresh tokens using the session saved refresh token
+                $client->refreshAccessToken($session['refresh_token']);
+                $_SESSION['sdk']['access_token'] = $client->getAccessToken();
+                $_SESSION['sdk']['refresh_token'] = $client->getRefreshToken();
+                // Sesssion refreshed with valid tokens
+                header( "Location: ". $client->getCurrentURI(array(), array('code','login','error','logout'))) ;
+                exit;
+            } catch (Exception $e2) {/* falls back to $e message bellow */}
+        }
         echo '<h3 id="message" style="color:red">'.$e->getMessage().'</h3>';
     }
 
