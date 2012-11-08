@@ -8,7 +8,7 @@
 <h1>SPiD Client user login and authentication example</h1>
 <?php
 
-// Start Session to save oauth token in session (instead of token)
+// Start Session to save oauth token in session (instead of cookie)
 session_start();
 
 // May get credential errors
@@ -24,7 +24,7 @@ require_once(BASE_DIR.'/src/Client.php');
 require_once(BASE_DIR.'/examples/config.php');
 // overwrite redirect url to be HERE
 $SPID_CREDENTIALS[VGS_Client::REDIRECT_URI] = "http://{$_SERVER['HTTP_HOST']}/examples/client_login";
-$SPID_CREDENTIALS[VGS_Client::COOKIE] = false;
+$SPID_CREDENTIALS[VGS_Client::COOKIE] = false; // disable cookie support for SDK
 
 // Instantiate the SDK client
 $client = new VGS_Client($SPID_CREDENTIALS);
@@ -60,7 +60,6 @@ if ($session) {
             <h4>Logged in as <span id="name" style="color:blue">'.$user['displayName'].'</span> <small>id: <span id="userId" style="color:green">'.$user['userId'].'</span> email: <span id="email" style="color:purple">'.$user['email'].'</span></h4>';
 
     } catch (VGS_Client_Exception $e) {
-        // API exception, show message, remove session as it is probably not usable
         if ($e->getCode() == 401) {
             // access denied, in case the access token is expired, try to refresh it
             try {
@@ -73,17 +72,19 @@ if ($session) {
                 exit;
             } catch (Exception $e2) {/* falls back to $e message bellow */}
         }
-        echo '<h3 id="message" style="color:red">'.$e->getMessage().'</h3>';
+        // API exception, show message, remove session as it is probably not usable
+        unset($_SESSION['sdk']);
+        echo '<h3 id="error" style="color:red">'.$e->getMessage().'</h3>';
     }
 
     // Show a logout link
-    echo '<p><a id="login-link" href="' . $client->getLogoutURI(array('redirect_uri' => $client->getCurrentURI(array('logout' => 1), array('login','error','code')))) . '">Logout</a></p>';
+    echo '<p><a id="login-link" href="' . $client->getLogoutURI(array('redirect_uri' => $client->getCurrentURI(array('logout' => 1), array('error','code')))) . '">Logout</a></p>';
 
 } else { // No session, user must log in
 
     echo '<h3 id="message">Please log in</h3>';
     // Show a login link
-    echo '<p><a id="login-link" href="' . $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array('login' => 1), array('logout','error','code')))) . '">Login</a></p>';
+    echo '<p><a id="login-link" href="' . $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')))) . '">Login</a></p>';
 }
 
 ?>
