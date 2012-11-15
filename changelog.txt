@@ -3,3 +3,6 @@
 
     - Fixed a bug where 'refresh_token' was not set in the signed session array. Basically fixing refresh logic.
 
+2012-11-15 v2.2
+
+    - Fixed a bug with refreshToken setting the session array and made getServerURL a public method

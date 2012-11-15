@@ -37,7 +37,7 @@ class VGS_Client {
     /**
      * SDK Version.
      */
-    const VERSION = '2.0';
+    const VERSION = '2.2';
 
     /**
      * Oauth Token URL
@@ -66,7 +66,7 @@ class VGS_Client {
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_TIMEOUT => 30,
-            CURLOPT_USERAGENT => 'spid-php-2.1'
+            CURLOPT_USERAGENT => 'spid-php-2.2'
      );
 
     /**
@@ -291,7 +291,7 @@ class VGS_Client {
         return strtr(base64_encode(addslashes(gzcompress(serialize($var),9))), '+/=', '-_,');
     }
 
-    private function getServerURL() {
+    public function getServerURL() {
         if ($this->isLive()) {
             return (($this->https)?'https://':'http://').$this->production_domain;
         } else {
@@ -683,6 +683,7 @@ class VGS_Client {
             $return = (array) json_decode($this->makeRequest($this->getTokenURL(), $params));
         }
         if (is_array($return) && isset($return['access_token'])) {
+            $this->session = $return;
             if (isset($return['access_token'])) {
                 $this->setAccessToken($return['access_token']);
             }
