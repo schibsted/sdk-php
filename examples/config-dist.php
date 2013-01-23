@@ -1,5 +1,6 @@
 <?php
 
+// Copy this file to a file called config.php and enter your credentials
 
 // Example overwrites REDIRECT_URI so that they can share this config file
 $SPID_CREDENTIALS = array(
