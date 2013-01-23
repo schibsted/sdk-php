@@ -6,7 +6,6 @@ if (!$SPID_CREDENTIALS) {
     die('ERROR: You must configure $SPID_CREDENTIALS  in config.php first!');
 }
 
-$SPID_CREDENTIALS[VGS_Client::REDIRECT_URI] = "http://{$_SERVER['HTTP_HOST']}/explorer/";
 $client = new VGS_Client($SPID_CREDENTIALS);
 
 if (isset($_GET['logout'])) {
@@ -15,7 +14,7 @@ if (isset($_GET['logout'])) {
 $session = $client->getSession();
 
 if ($session && isset($_GET['code'])) {
-    header( "Location: ".$SPID_CREDENTIALS[VGS_Client::REDIRECT_URI] ) ;
+    header( "Location: " . $client->getCurrentURI(array(), array('code')) ) ;
     exit;
 }
 
