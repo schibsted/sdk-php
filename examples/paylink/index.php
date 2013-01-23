@@ -19,7 +19,7 @@ if ($_POST) {
     $client->auth();
 
     $data = array(
-        'purchaseFlow' => 'AUTHORIZE',
+        'purchaseFlow' => $_POST['purchaseFlow'],
         'title' => $_POST['title'],
         'items' => array(
             array('vat' => 2500, 'price' => $_POST['price'] * 100, 'description' => $_POST['description'],)
@@ -41,6 +41,7 @@ if ($result) {?>
             <tr><th>&nbsp;</th><td><?php echo $item['description']?> : <?php echo $item['currency']?> <?php echo $item['price']/100;?>,- (<?php echo $item['vat']/100;?>% VAT)</td></tr>
         <?php endforeach; ?>
     </table>
+    <pre><?php print_r($result); ?></pre>
 <?php      
 } else {
  ?>
