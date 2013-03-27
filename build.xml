@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="SPiD PHP SDK" default="build">
+ <target name="build"
+   depends="prepare,lint,phpunit"/>
+
+ <target name="clean" description="Cleanup build artifacts">
+  <delete dir="${basedir}/tests/build/coverage"/>
+  <delete dir="${basedir}/tests/build/logs"/>
+ </target>
+
+ <target name="prepare" depends="clean" description="Prepare for build">
+  <mkdir dir="${basedir}/tests/build/coverage"/>
+  <mkdir dir="${basedir}/tests/build/logs"/>
+ </target>
+
+ <target name="lint" description="Perform syntax check of sourcecode files">
+  <apply executable="php" failonerror="true">
+   <arg value="-l" />
+
+   <fileset dir="${basedir}/src">
+    <include name="**/*.php" />
+    <modified />
+   </fileset>
+
+   <fileset dir="${basedir}/tests">
+    <include name="**/*.php" />
+    <modified />
+   </fileset>
+  </apply>
+ </target>
+
+ <target name="phpunit" description="Run unit tests with PHPUnit">
+  <exec dir="${basedir}/tests" executable="phpunit" failonerror="true">
+    <!-- <arg value="" /> -->
+  </exec>
+ </target>
+
+</project>
