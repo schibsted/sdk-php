@@ -9,7 +9,7 @@ error_reporting(E_ALL | E_STRICT);
 
 require_once(__DIR__ . '/../src/Client.php');
 
-class BaseIntegrationTest extends PHPUnit_Framework_TestCase {
+class BaseIntegrationTest extends PHPUnit_Framework_TestCase 
 
     public $vgservices;
     public $SPID_CREDENTIALS;

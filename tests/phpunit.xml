@@ -18,7 +18,7 @@
     <whitelist addUncoveredFilesFromWhitelist="true">
       <directory suffix="src/**/*.php">src</directory>
       <exclude>
-        <!-- <file>*.html</file> -->
+        <file>test_bootstrap.php</file>
       </exclude>
     </whitelist>
   </filter>
