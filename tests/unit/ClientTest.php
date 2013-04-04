@@ -20,8 +20,4 @@ class ClientTest extends PHPUnit_Framework_TestCase {
         $result   = $client->getServerURL();
         $this->assertEquals($expected, $result);
     }
-
-    public function testFail() {
-        $this->assertTrue(false, "This should fail");
-    }
 }
