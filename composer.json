@@ -1,0 +1,12 @@
+{
+  "name": "schibsted/sdk-php",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Schibsted Payment"
+    }
+  ],
+  "autoload": {
+    "classmap": ["src/"]
+  }
+}
