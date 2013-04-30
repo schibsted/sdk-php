@@ -1251,6 +1251,7 @@ class VGS_Client {
      */
     public function parseSignedRequest($signed_request) {
         list($encoded_sig, $payload) = explode('.', $signed_request, 2);
+        $data = json_decode(self::base64UrlDecode($payload), true);
         $algorithm = strtoupper($data['algorithm']);
         return $this->validateAndDecodeSignedRequest($encoded_sig, $payload, $algorithm);
     }
@@ -1267,6 +1268,7 @@ class VGS_Client {
         }
         return $ret;
     }
+
     public function createHash($data) {
         $string = $this->recursiveHash($data);
         $secret = $this->getClientSignSecret();
@@ -1276,10 +1278,11 @@ class VGS_Client {
     public function validateAndDecodeSignedRequest($encoded_signature, $payload, $algorithm = 'HMAC-SHA256') {
         $sig = self::base64UrlDecode($encoded_signature);
         $data = json_decode(self::base64UrlDecode($payload), true);
+        $string = $this->recursiveHash($data);
 
         switch ($algorithm) {
             case 'HMAC-SHA256' :
-                $expected_sig = hash_hmac('sha256', $payload, $this->getClientSignSecret(), true);
+                $expected_sig = hash_hmac('sha256', $string, $this->getClientSignSecret(), true);
 
                 // check sig
                 if ($sig !== $expected_sig) {
