@@ -1,0 +1,10 @@
+language: php
+php:
+  - 5.3
+branches:
+  only:
+    - dev
+    - master
+script:
+    - cd tests
+    - ./runtests
