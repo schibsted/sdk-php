@@ -340,7 +340,7 @@ class VGS_Client {
      * @param string $context_client_id the Client ID
      */
     public function setContextClientID($context_client_id) {
-        $this->context_lient_id = $context_client_id;
+        $this->context_client_id = $context_client_id;
     }
 
     /**
