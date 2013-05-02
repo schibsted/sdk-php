@@ -37,7 +37,7 @@ class VGS_Client {
     /**
      * SDK Version.
      */
-    const VERSION = '2.2';
+    const VERSION = '2.3';
 
     /**
      * Oauth Token URL
@@ -66,7 +66,7 @@ class VGS_Client {
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_TIMEOUT => 30,
-            CURLOPT_USERAGENT => 'spid-php-2.2'
+            CURLOPT_USERAGENT => 'spid-php-2.3'
      );
 
     /**
