@@ -19,6 +19,7 @@ $post = file_get_contents("php://input");
 $logger("==NEW==");
 $logger($_SERVER['REQUEST_URI'] . ' ' . time());
 $logger("Payload : $post");
+$logger(print_r(apache_request_headers(), true));
 
 // USE EITHER VERBOSE EXAMPLE OR SDK EXAMPLE
 
@@ -26,7 +27,9 @@ $logger("Payload : $post");
 // START OF VERBOSE EXAMPLE
 
 function parse_signed_request($signed_request, $secret) {
-  list($encoded_sig, $payload) = explode('.', $signed_request, 2);
+  $arr = explode('.', $signed_request, 2);
+  if (!$arr || count($arr) < 2) return null;
+  list($encoded_sig, $payload) = $arr;
 
   // decode the data
   $sig = base64_url_decode($encoded_sig);
@@ -73,10 +76,29 @@ if (!$data) {
 }
 
 
-if ($data && is_array($data)) foreach ($data['entry'] as $object) {
-   $logger("Looking up : Order[" .$object['orderId'].']');
-   $order = $client->api('/order/'.$object['orderId'], 'GET');
-   $logger("Order:".PHP_EOL.print_r($order, true));
+if ($data && is_array($data)) {
+    switch ($data['object']) {
+        case 'order' :
+            foreach ($data['entry'] as $object) {
+                $logger("Looking up : Order[" .$object['orderId'].']');
+//                $order = $client->api('/order/'.$object['orderId'], 'GET');
+//                $logger("Order:".PHP_EOL.print_r($order, true));
+            }
+            break;
+        case 'user' :
+            foreach ($data['entry'] as $object) {
+                $logger("Looking up : User[" .$object['userId'].']');
+//                $order = $client->api('/suer/'.$object['userId'], 'GET');
+//                $logger("User:".PHP_EOL.print_r($user, true));
+            }
+
+            break;
+
+        default:
+            $logger("I dont know this type [{$data['object']}]");
+
+            break;
+    }
 }
 
 $logger('=======');
@@ -86,7 +108,6 @@ fclose($file_handle);
 //header('HTTP/1.0 401 Unauthorized', true, 401);
 
 header('HTTP/1.0 202 ACCEPTED', true, 202);
-echo "OK";
 
 /* Sample output:
 
