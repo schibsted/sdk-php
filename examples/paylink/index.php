@@ -31,9 +31,10 @@ if ($_POST) {
         $errors = $client->container['meta'] ?: ($client->container['error'] ?: $e->getMessage());
     }
 }
-if ($result) {?>
+if ($result) {
+    ?>
     <table>
-        <tr><th>title</th><td><?php echo $result['title']?></t  d></tr>
+        <tr><th>title</th><td><?php echo $result['title']?></td></tr>
         <tr><th>expires</th><td><?php echo $result['expires']?></td></tr>
         <tr><th>url</th><td><a href="<?php echo $result['shortUrl']?>"><?php echo $result['shortUrl']?></a></td></tr>
         <tr><th colspan="2" align="left">Paylink Items:</th></tr>
