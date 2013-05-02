@@ -1,3 +1,8 @@
+<?php
+
+// Start Session to save oauth token in session (instead of cookie)
+session_start();
+?>
 <!doctype html>
 <html>
 <head>
@@ -7,10 +12,6 @@
 <body>
 <h1>SPiD Client user login and authentication example</h1>
 <?php
-
-// Start Session to save oauth token in session (instead of cookie)
-session_start();
-
 // May get credential errors
 if (isset($_GET['error'])) {
     echo '<h3 id="message" style="color:red">'.$_GET['error'].'</h3>';
@@ -28,6 +29,7 @@ $SPID_CREDENTIALS[VGS_Client::COOKIE] = false; // disable cookie support for SDK
 
 // Instantiate the SDK client
 $client = new VGS_Client($SPID_CREDENTIALS);
+$client->argSeparator = '&';
 
 // When a logout redirect comes from SPiD, delete the local session
 if (isset($_GET['logout'])) {
@@ -59,6 +61,10 @@ if ($session) {
         echo '<h3 id="message">Welcome</h3>
             <h4>Logged in as <span id="name" style="color:blue">'.$user['displayName'].'</span> <small>id: <span id="userId" style="color:green">'.$user['userId'].'</span> email: <span id="email" style="color:purple">'.$user['email'].'</span></h4>';
 
+        if (isset($_GET['order_id'])) {
+            echo '<pre>'.print_r($client->api('/order/'.$_GET['order_id']),true).'</pre>';
+        }
+
     } catch (VGS_Client_Exception $e) {
         if ($e->getCode() == 401) {
             // access denied, in case the access token is expired, try to refresh it
@@ -70,21 +76,41 @@ if ($session) {
                 // Sesssion refreshed with valid tokens
                 header( "Location: ". $client->getCurrentURI(array(), array('code','login','error','logout'))) ;
                 exit;
-            } catch (Exception $e2) {/* falls back to $e message bellow */}
+            } catch (Exception $e2) {
+                /* falls back to $e message bellow */
+            }
         }
+        if ($e->getCode() == 400) {
+            header( "Location: ". $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')))));
+            exit;
+        }
+
         // API exception, show message, remove session as it is probably not usable
         unset($_SESSION['sdk']);
-        echo '<h3 id="error" style="color:red">'.$e->getMessage().'</h3>';
+        echo '<h3 id="error" style="color:red">'.$e->getCode().' : '.$e->getMessage().'</h3>';
     }
-
     // Show a logout link
-    echo '<p><a id="login-link" href="' . $client->getLogoutURI(array('redirect_uri' => $client->getCurrentURI(array('logout' => 1), array('error','code')))) . '">Logout</a></p>';
+    echo '<p><a id="login-link" href="' . $client->getLogoutURI(array('redirect_uri' =>
+        $client->getCurrentURI(array('logout' => 1, 'places'=>'55.43,12.45'), array('error','code'))
+    )) . '">Logout</a></p>';
+
+
+    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array('redirect_uri' =>
+        $client->getCurrentURI(array(), array('logout','error','code'))
+    )) . '">Buy</a></p>';
+
+    echo '<p><a id="login-link" href="' . $client->getAccountURI(array('redirect_uri' =>
+        $client->getCurrentURI(array(), array('logout','error','code'))
+    )) . '">My Account</a></p>';
 
 } else { // No session, user must log in
 
     echo '<h3 id="message">Please log in</h3>';
     // Show a login link
-    echo '<p><a id="login-link" href="' . $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')))) . '">Login</a></p>';
+    echo '<p><a id="login-link" href="' . $client->getLoginURI(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
+        'cancel_redirect_uri' => "http://google.com"
+    )) . '">Login</a></p>';
 }
 
 ?>
