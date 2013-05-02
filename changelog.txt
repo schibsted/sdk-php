@@ -6,3 +6,18 @@
 2012-11-15 v2.2
 
     - Fixed a bug with refreshToken setting the session array and made getServerURL a public method
+
+2013-05-01 v2.3
+
+    Bug fixes:
+
+    - Fixed critical bugs that made parse and creating signature hashes non-functional
+    - Fixed typo in setContextClientID()
+
+    Other:
+
+    - Added MIT license file
+    - Added unit test support (tests will be added over the next few partial releases)
+    - Added composer.json for dependency deployment
+    - Added travis.yml for CI
+    - Fixed some typoes and made some improvements to the example files
