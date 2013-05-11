@@ -1,8 +1,7 @@
 <phpunit bootstrap="test_bootstrap.php">
   <testsuites>
     <testsuite name="Integration">
-      <!-- <directory suffix="Test.php">unit</directory> -->
-      <file>unit/ClientTest.php</file>
+      <directory suffix="Test.php">./unit</directory>
     </testsuite>
   </testsuites>
 
