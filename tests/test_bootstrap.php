@@ -8,54 +8,39 @@ date_default_timezone_set('Europe/Oslo');
 error_reporting(E_ALL | E_STRICT);
 
 require_once(__DIR__ . '/../src/Client.php');
+require_once(__DIR__ . '/setUp/TestableClient.php');
 
 class BaseIntegrationTest extends PHPUnit_Framework_TestCase {
 
-    public $vgservices;
+    public $client;
     public $SPID_CREDENTIALS;
 
     public function setUp() {
-        $this->vgservices = Bootstrap::getVgServices();
-        $this->SPID_CREDENTIALS = Bootstrap::getVgsCredentials();
+        if (empty($this->SPID_CREDENTIALS)) {
+            require_once(__DIR__ . '/config.php');
+            $this->SPID_CREDENTIALS = $SPID_CREDENTIALS;
+        }
+        $this->client = new TestableClient($SPID_CREDENTIALS);
     }
 
 }
 
-class Bootstrap {
+class BaseUnitTest extends PHPUnit_Framework_TestCase {
 
-    private static $vgservices = null;
-    private static $SPID_CREDENTIALS;
-    private static $storage;
+    public $client;
+    public $SPID_CREDENTIALS;
 
-    private static function __initialize() {
-        require_once(__DIR__ . '/config.php');
-
-        self::$SPID_CREDENTIALS = $SPID_CREDENTIALS;
-        self::$vgservices = new VGS_Client($SPID_CREDENTIALS);
-    
-    }
-
-    public static function getVgServices() {
-        if (!isset(self::$vgservices)) {
-            self::__initialize();
+    public function setUp() {
+        if (empty($this->SPID_CREDENTIALS)) {
+            require_once(__DIR__ . '/config.php');
+            $this->SPID_CREDENTIALS = $SPID_CREDENTIALS;
         }
-        return self::$vgservices;
-    }
-
-    public static function getVgsCredentials() {
-        if (!isset(self::$SPID_CREDENTIALS)) {
-            self::__initialize();
-        }
-        return self::$SPID_CREDENTIALS;
-    }
-
-    public static function getStorage($key) {
-        return isset(self::$storage[$key]) ? self::$storage[$key] : null;
-    }
-
-    public static function setStorage($key, $value) {
-        return self::$storage[$key] = $value;
+        $this->client = new TestableClient($this->SPID_CREDENTIALS);
+        $this->client->SERVER = array(
+            'HTTP_HOST'     => 'sdk.dev',
+            'HTTPS'         => 'ON',
+            'REQUEST_URI'   => '/tests/test.php',
+        );
     }
 
 }
-

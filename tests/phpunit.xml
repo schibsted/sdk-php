@@ -1,11 +1,9 @@
 <phpunit bootstrap="test_bootstrap.php">
   <testsuites>
-    <testsuite name="Integration">
-      <!-- <directory suffix="Test.php">unit</directory> -->
+    <testsuite name="Unit">
       <file>unit/ClientTest.php</file>
     </testsuite>
   </testsuites>
-
   <logging>
     <log type="coverage-html" target="build/coverage" title="PhpSdk"
          charset="UTF-8" yui="true" highlight="true"

@@ -497,6 +497,27 @@ class VGS_Client {
     public function getXitiConfiguration() {
         return $this->encodeSerializedUrlVariable($this->xiti);
     }
+
+    /**
+     * Get a paramter from $_REQUEST - overwriteable for testing
+     * 
+     * @param string $param name of key in $_REQUEST array
+     * @return mixed/null 
+     */
+    protected function _getRequestParam($param) {
+        return array_key_exists($param, $_REQUEST) ? $_REQUEST[$param] : null;
+    }
+
+    /**
+     * Get a paramter from $_SERVER - overwriteable for testing
+     * 
+     * @param string $param name of key in $_SERVER array
+     * @return mixed/null 
+     */
+    protected function _getServerParam($param) {
+        return array_key_exists($param, $_SERVER) ? $_SERVER[$param] : null;
+    }
+
     /**
      * Get the data from a signed_request token
      *
@@ -504,8 +525,9 @@ class VGS_Client {
      */
     public function getSignedRequest() {
         if (!$this->signedRequest) {
-            if (isset($_REQUEST['signed_request'])) {
-                $this->signedRequest = $this->parseSignedRequest($_REQUEST['signed_request']);
+            $signed_request_paramter = $this->_getRequestParam('signed_request');
+            if ($signed_request_paramter) {
+                $this->signedRequest = $this->parseSignedRequest($signed_request_paramter);
             }
         }
         return $this->signedRequest;
@@ -547,9 +569,10 @@ class VGS_Client {
             if (!empty($parsed_url['path'])) {
                 $parsed_path = ($parsed_url['path'] != '/')?rtrim($parsed_url['path'], '/'):'/';
             }
-
-            if (!$session && stristr($_SERVER['REQUEST_URI'],$parsed_path) && isset($_REQUEST['code'])) {
-                $ret = $this->getAccessToken($_REQUEST['code']);
+            $request_uri = $this->_getServerParam('REQUEST_URI');
+            $code = $this->_getRequestParam('code');
+            if (!$session && stristr($request_uri,$parsed_path) && $code) {
+                $ret = $this->getAccessToken($code);
                 if (is_array($ret) && isset($ret['access_token'])) {
                     $session = $this->signSession($ret); // Signs session for security
                 }
@@ -561,8 +584,9 @@ class VGS_Client {
                 $session = $this->createSessionFromSignedRequest($signedRequest);
             }
             // try loading session from $_REQUEST
-            if (!$session && isset($_REQUEST['session'])) {
-                $session = json_decode(get_magic_quotes_gpc() ? stripslashes($_REQUEST['session']) : $_REQUEST['session'], true);
+            $session_param = $this->_getRequestParam('session');
+            if (!$session && $session_param) {
+                $session = json_decode(get_magic_quotes_gpc() ? stripslashes($session_param) : $session_param, true);
                 $session = $this->validateSessionObject($session);
             }
             // try loading session from cookie if necessary
@@ -770,13 +794,17 @@ class VGS_Client {
      */
     public function getLoginURI($params = array()) {
         $currentUrl = $this->getCurrentURI();
-        return $this->getUrl('www', 'login', array_merge(array(
-                'client_id' => $this->getClientID(),
-                'response_type' => 'code',
-                'redirect_uri' => $currentUrl,
-                'flow' => 'signup',
-                'xiti' => $this->getXitiConfiguration(),
-                'v' => self::VERSION), $params));
+        $default_params = array(
+            'client_id' => $this->getClientID(),
+            'response_type' => 'code',
+            'redirect_uri' => $currentUrl,
+            'flow' => 'signup'
+        );
+        if ($this->xiti) {
+            $default_params['xiti'] = $this->getXitiConfiguration();
+        }
+        $default_params['v'] = self::VERSION;
+        return $this->getUrl('www', 'login', array_merge($default_params, $params));
     }
 	/**
      * Get a Signup URI for use with redirects. By default, full page redirect is
@@ -793,13 +821,17 @@ class VGS_Client {
      */
     public function getSignupURI($params = array()) {
         $currentUrl = $this->getCurrentURI();
-        return $this->getUrl('www', 'signup', array_merge(array(
-                'client_id' => $this->getClientID(),
-                'response_type' => 'code',
-                'redirect_uri' => $currentUrl,
-                'flow' => 'signup',
-                'xiti' => $this->getXitiConfiguration(),
-                'v' => self::VERSION), $params));
+        $default_params = array(
+            'client_id' => $this->getClientID(),
+            'response_type' => 'code',
+            'redirect_uri' => $currentUrl,
+            'flow' => 'signup',
+        );
+        if ($this->xiti) {
+            $default_params['xiti'] = $this->getXitiConfiguration();
+        }
+        $default_params['v'] = self::VERSION;
+        return $this->getUrl('www', 'signup', array_merge($default_params, $params));
     }
 
     /**
@@ -808,12 +840,16 @@ class VGS_Client {
      */
     public function getAccountURI($params = array()) {
         $currentUrl = $this->getCurrentURI();
-        return $this->getUrl('www', 'account', array_merge(array(
-                'client_id' => $this->getClientID(),
-        		'response_type' => 'code',
-                'redirect_uri' => $currentUrl,
-                'xiti' => $this->getXitiConfiguration(),
-                ), $params));
+        $default_params = array(
+            'client_id' => $this->getClientID(),
+            'response_type' => 'code',
+            'redirect_uri' => $currentUrl,
+        );
+        if ($this->xiti) {
+            $default_params['xiti'] = $this->getXitiConfiguration();
+        }
+        $default_params['v'] = self::VERSION;
+        return $this->getUrl('www', 'account', array_merge($default_params, $params));
     }
 
     /**
@@ -822,12 +858,16 @@ class VGS_Client {
      */
     public function getPurchaseHistoryURI($params = array()) {
         $currentUrl = $this->getCurrentURI();
-        return $this->getUrl('www', 'account/purchasehistory', array_merge(array(
-                'client_id' => $this->getClientID(),
-        		'response_type' => 'code',
-                'redirect_uri' => $currentUrl,
-                'xiti' => $this->getXitiConfiguration(),
-                ), $params));
+        $default_params = array(
+            'client_id' => $this->getClientID(),
+            'response_type' => 'code',
+            'redirect_uri' => $currentUrl,
+        );
+        if ($this->xiti) {
+            $default_params['xiti'] = $this->getXitiConfiguration();
+        }
+        $default_params['v'] = self::VERSION;
+        return $this->getUrl('www', 'account/purchasehistory', array_merge($default_params, $params));
     }
 
     /**
@@ -848,10 +888,15 @@ class VGS_Client {
      * @return String the URI for the logout flow
      */
     public function getLogoutURI($params = array()) {
-        return $this->getUrl('www', 'logout', array_merge(array(
-                'redirect_uri'=> $this->getCurrentURI(),
-        		'xiti' => $this->getXitiConfiguration(),
-                'oauth_token' => $this->getAccessToken()), $params));
+        $default_params = array(
+            'redirect_uri'=> $this->getCurrentURI(),
+            'oauth_token' => $this->getAccessToken()
+        );
+        if ($this->xiti) {
+            $default_params['xiti'] = $this->getXitiConfiguration();
+        }
+        $default_params['v'] = self::VERSION;
+        return $this->getUrl('www', 'logout', array_merge($default_params, $params));
     }
 
     /**
@@ -864,15 +909,19 @@ class VGS_Client {
      * @return string URI to product purchase
      */
     public function getPurchaseURI($params = array()) {
-        $uri = array(
+        $default_params = array(
         		'flow'		  => 'payment',
         		'client_id' => $this->getClientID(),
         		'response_type' => 'code',
         		'redirect_uri'=> $this->getCurrentURI(),
-        		'xiti' => $this->getXitiConfiguration()
         );
 
-        $merged_uri = array_merge($uri, $params);
+        if ($this->xiti) {
+            $default_params['xiti'] = $this->getXitiConfiguration();
+        }
+        $default_params['v'] = self::VERSION;
+
+        $merged_uri = array_merge($default_params, $params);
         return $this->getUrl('www', 'auth/start', $merged_uri);
     }
 
@@ -1329,8 +1378,13 @@ class VGS_Client {
      */
     public function getCurrentURI($extra_params = array(), $drop_params = array()) {
         $drop_params = array_merge(self::$DROP_QUERY_PARAMS, $drop_params);
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
-        $currentUrl = $protocol . (isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:'') . (isset($_SERVER['REQUEST_URI'])?$_SERVER['REQUEST_URI']:'');
+
+        $server_https = $this->_getServerParam('HTTPS');
+        $server_http_host = $this->_getServerParam('HTTP_HOST') ?: '';
+        $server_request_uri = $this->_getServerParam('REQUEST_URI') ?: '';
+
+        $protocol = isset($server_https) && $server_https == 'on' ? 'https://' : 'http://';
+        $currentUrl = $protocol . $server_http_host  . $server_request_uri;
         $parts = parse_url($currentUrl);
         // drop known params
         $query = '';
