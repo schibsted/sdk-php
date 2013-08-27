@@ -33,17 +33,28 @@ class ClientTest extends BaseUnitTest {
     }
 
     public function testParseSignedRequest() {
-        $request = array(
+        $data = array(
+            'id' => 12,
+            'name' => 'place',
             'algorithm' => 'HMAC-SHA256',
-            0 => 'payload',
         );
 
-        $payload = rtrim(strtr(base64_encode(json_encode($request)), '+/', '-_'), '=');
-        $hash = $this->client->createHash($request);
-
+        $payload = rtrim(strtr(base64_encode(json_encode($data)), '+/', '-_'), '=');
+        $hash = rtrim(strtr(base64_encode(hash_hmac('sha256', $payload, 'foobar', true)), '+/', '-_'), '=');
         $signedRequest = sprintf('%s.%s', $hash, $payload);
 
-        $this->assertSame($request, $this->client->parseSignedRequest($signedRequest));
+        $this->assertSame($data, $this->client->parseSignedRequest($signedRequest));
+    }
+
+    public function testValidateAndDecodeSignedRequest() {
+        $data = array(
+            'id' => 12,
+            'name' => 'place'
+        );
+        $payload = rtrim(strtr(base64_encode(json_encode($data)), '+/', '-_'), '=');
+        $sig = rtrim(strtr(base64_encode(hash_hmac('sha256', $payload, 'foobar', true)), '+/', '-_'), '=');
+        $result = $this->client->validateAndDecodeSignedRequest($sig, $payload, 'HMAC-SHA256');
+        $this->assertSame($data, $result);
     }
 
     public function testgetCurrentURI() {

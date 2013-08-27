@@ -1294,19 +1294,11 @@ class VGS_Client {
     }
 
     /**
-     * Parses a signed_request and validates the signature.
-     *
-     * @param String A signed token
-     * @return Array the payload inside it or null if the sig is wrong
+     * Used to create outgoing POST data hashes, not for API response signature
+     * 
+     * @param  array $data 
+     * @return string
      */
-    public function parseSignedRequest($signed_request) {
-        list($encoded_sig, $payload) = explode('.', $signed_request, 2);
-        $data = json_decode(self::base64UrlDecode($payload), true);
-        $algorithm = strtoupper($data['algorithm']);
-        return $this->validateAndDecodeSignedRequest($encoded_sig, $payload, $algorithm);
-    }
-
-
     private function recursiveHash($data) {
         if (!is_array($data)) {
             return $data;
@@ -1319,34 +1311,60 @@ class VGS_Client {
         return $ret;
     }
 
+    /**
+     * Creates a post data array hash that must be added to outgoing API requests
+     * that require it.
+     *
+     * @param  array $data
+     * @return  string
+     */
     public function createHash($data) {
         $string = $this->recursiveHash($data);
         $secret = $this->getClientSignSecret();
         return self::base64UrlEncode(hash_hmac("sha256", $string, $secret, true));
     }
 
+    /**
+     * Parses a signed_request and validates the signature.
+     *
+     * @param String A signed token
+     * @return Array the payload inside it or null if the sig is wrong
+     */
+    public function parseSignedRequest($signed_request) {
+        list($encoded_sig, $payload) = explode('.', $signed_request, 2);
+        $data = json_decode(self::base64UrlDecode($payload), true);
+        $algorithm = strtoupper($data['algorithm']);
+        return $this->validateAndDecodeSignedRequest($encoded_sig, $payload, $algorithm);
+    }
+
+    /**
+     * Validate and decode Signed API Request responses
+     *
+     * @param  string $encoded_signature
+     * @param  string $payload
+     * @param  string $algorithm
+     * @return array array of decoded payload or null if invalid signature
+     */
     public function validateAndDecodeSignedRequest($encoded_signature, $payload, $algorithm = 'HMAC-SHA256') {
         $sig = self::base64UrlDecode($encoded_signature);
-        $data = json_decode(self::base64UrlDecode($payload), true);
-        $string = $this->recursiveHash($data);
 
         switch ($algorithm) {
             case 'HMAC-SHA256' :
-                $expected_sig = hash_hmac('sha256', $string, $this->getClientSignSecret(), true);
+                $expected_sig = hash_hmac('sha256', $payload, $this->getClientSignSecret(), true);
 
                 // check sig
                 if ($sig !== $expected_sig) {
                     self::errorLog('Bad Signed JSON signature!');
                     return null;
                 }
-                return $data;
+
+                return json_decode(self::base64UrlDecode($payload), true);
                 break;
             default:
                 self::errorLog('Unknown algorithm. Expected HMAC-SHA256');
-                return null;
                 break;
-
         }
+        return null;
     }
 
     /**
