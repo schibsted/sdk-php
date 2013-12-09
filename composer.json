@@ -4,7 +4,6 @@
     "keywords": ["spid", "schibsted", "payment", "api"],
     "homepage": "https://github.com/schibsted",
     "type": "library",
-    "license": "MIT",
     "authors": [
     ],
     "require": {
