@@ -1,0 +1,19 @@
+{
+    "name": "schibsted/spid-sdk-php",
+    "description": "Schibsted SPiD PHP client library.",
+    "keywords": ["spid", "schibsted", "payment", "api"],
+    "homepage": "https://github.com/schibsted",
+    "type": "library",
+    "authors": [
+    ],
+    "require": {
+        "php": ">=5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "classmap": ["src/Client.php", "src/Client/Exception.php"]
+    }
+}
+
