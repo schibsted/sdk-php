@@ -14,7 +14,7 @@
         "phpunit/phpunit": "*"
     },
     "autoload": {
-        "psr-0": { "SPiD": "src/" }
+        "classmap": ["src/Client.php", "src/Client/Exception.php"]
     }
 }
 
