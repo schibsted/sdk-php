@@ -1,0 +1,11 @@
+.main {width: 600px;}
+
+.direct-payment-form { padding:20px; }
+
+.direct-payment-form .field { padding: 4px; margin:1px; background: #eee; }
+
+.direct-payment-form .field label { display:inline-block; width:200px; margin-left:5px; }
+
+.direct-payment-form .field input { display:inline-block;}
+
+.direct-payment-form .field input[type=text] { display:inline-block; width: 250px}
