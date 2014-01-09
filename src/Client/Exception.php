@@ -37,6 +37,9 @@ class VGS_Client_Exception extends Exception {
         } else {
             $msg = 'Unknown Error. Check getResult() and getRaw()';
         }
+        if (is_array($msg)) {
+            $msg = join(' ', $msg);
+        }
         parent::__construct($msg, intval($code));
     }
 
