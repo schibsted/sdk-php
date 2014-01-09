@@ -4,10 +4,12 @@
 
     $result = false;
     $errors = false;
+    $action_request = false;
     $client = new VGS_Client($SPID_CREDENTIALS);
     $client->auth();
 
     if ($_POST) {
+        $action_request = true;
         $errors = array();
         $data = array(
             'requestReference' => '',
@@ -41,23 +43,26 @@
             $errors = $client->container['meta'] ?: ($client->container['error'] ?: $e->getMessage());
         }
     } else {
-        if ($_GET['action'] == 'capture') {
-            try {
-                $result = $client->api("/order/{$_GET['orderId']}/capture", 'POST', array());
-            }  catch (VGS_Client_Exception $e) {
-                $errors = $client->container['meta'] ?: ($client->container['error'] ?: $e->getMessage());
-            }
-        } else if ($_GET['action'] == 'credit') {
-            try {
-                $result = $client->api("/order/{$_GET['orderId']}/credit", 'POST', array('description' => 'Credited by SDK.'));
-            }  catch (VGS_Client_Exception $e) {
-                $errors = $client->container['meta'] ?: ($client->container['error'] ?: $e->getMessage());
-            }
-        } else if ($_GET['action'] == 'cancel') {
-            try {
-                $result = $client->api("/order/{$_GET['orderId']}/cancel", 'POST', array());
-            }  catch (VGS_Client_Exception $e) {
-                $errors = $client->container['meta'] ?: ($client->container['error'] ?: $e->getMessage());
+        if (!empty($_GET['action'])) {
+            $action_request = true;
+            if ($_GET['action'] == 'capture') {
+                try {
+                    $result = $client->api("/order/{$_GET['orderId']}/capture", 'POST', array());
+                }  catch (VGS_Client_Exception $e) {
+                    $errors = $client->container['meta'] ?: ($client->container['error'] ?: $e->getMessage());
+                }
+            } else if ($_GET['action'] == 'credit') {
+                try {
+                    $result = $client->api("/order/{$_GET['orderId']}/credit", 'POST', array('description' => 'Credited by SDK.'));
+                }  catch (VGS_Client_Exception $e) {
+                    $errors = $client->container['meta'] ?: ($client->container['error'] ?: $e->getMessage());
+                }
+            } else if ($_GET['action'] == 'cancel') {
+                try {
+                    $result = $client->api("/order/{$_GET['orderId']}/cancel", 'POST', array());
+                }  catch (VGS_Client_Exception $e) {
+                    $errors = $client->container['meta'] ?: ($client->container['error'] ?: $e->getMessage());
+                }
             }
         }
     }
@@ -92,11 +97,13 @@
             }
         }
     } else {
-        if ($errors) {
-            echo "Error returned from API.";
-            var_dump($errors);
-        } else {
-            echo "Unknown error.";
+        if ( $action_request) {
+            if ($errors) {
+                echo "Error returned from API.";
+                var_dump($errors);
+            } else {
+                echo "Unknown error.";
+            }
         }
     }
 ?>
@@ -172,8 +179,10 @@
                     <input type="text" id="quantity" name="quantity" value="">
                 </div>
 
+                <div class="submit-div">
+                    <input type="submit" class="submit-button" value="Send">
+                </div>
             </fieldset>
-            <input type="submit">
         </form>
     </div>
 </div>
