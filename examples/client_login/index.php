@@ -91,7 +91,7 @@ if ($session) {
     }
     // Show a logout link
     echo '<p><a id="login-link" href="' . $client->getLogoutURI(array('redirect_uri' =>
-        $client->getCurrentURI(array('logout' => 1, 'places'=>'55.43,12.45'), array('error','code'))
+        $client->getCurrentURI(array('logout' => 1), array('error','code'))
     )) . '">Logout</a></p>';
 
 
@@ -103,14 +103,29 @@ if ($session) {
         $client->getCurrentURI(array(), array('logout','error','code'))
     )) . '">My Account</a></p>';
 
-} else { // No session, user must log in
+    echo '<p><a id="login-link" href="' . $client->getCheckoutFlow(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
+        'cancel_redirect_uri' => "http://google.com"
+    )) . '">Purchase Flow</a></p>';
 
+} else { // No session, user must log in
+ 
     echo '<h3 id="message">Please log in</h3>';
     // Show a login link
+
+    echo '<p><a id="login-link" href="' . $client->getLoginFlow(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
+        'cancel_redirect_uri' => "http://google.com"
+    )) . '">Login Flow</a></p>';
     echo '<p><a id="login-link" href="' . $client->getLoginURI(array(
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
         'cancel_redirect_uri' => "http://google.com"
     )) . '">Login</a></p>';
+
+    echo '<p><a id="login-link" href="' . $client->getCheckoutFlow(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
+        'cancel_redirect_uri' => "http://google.com"
+    )) . '">Purchase Flow</a></p>';
 }
 
 ?>

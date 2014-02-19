@@ -37,7 +37,7 @@ class VGS_Client {
     /**
      * SDK Version.
      */
-    const VERSION = '2.3';
+    const VERSION = '2.4';
 
     /**
      * Oauth Token URL
@@ -300,6 +300,9 @@ class VGS_Client {
     }
     private function getBaseURL($name = 'www') {
         switch ($name) {
+            case 'flow':
+                return self::getServerURL() . '/flow/';
+                break;
             case 'api':
             case 'api_read':
                 return self::getServerURL() . '/api/' . ($this->api_version == null ? '' : $this->api_version . '/');
@@ -807,6 +810,29 @@ class VGS_Client {
         $default_params['v'] = self::VERSION;
         return $this->getUrl('www', 'login', array_merge($default_params, $params));
     }
+
+    public function getLoginFlow(array $params = array()) {
+        $currentUrl = $this->getCurrentURI();
+        $default_params = array(
+            'client_id' => $this->getClientID(),
+            'response_type' => 'code',
+            'redirect_uri' => $currentUrl,
+        );
+        $default_params['v'] = self::VERSION;
+        return $this->getUrl('flow', 'login', array_merge($default_params, $params));
+    }
+
+    public function getCheckoutFlow(array $params = array()) {
+        $currentUrl = $this->getCurrentURI();
+        $default_params = array(
+            'client_id' => $this->getClientID(),
+            'response_type' => 'code',
+            'redirect_uri' => $currentUrl,
+        );
+        $default_params['v'] = self::VERSION;
+        return $this->getUrl('flow', 'checkout', array_merge($default_params, $params));
+    }
+
 	/**
      * Get a Signup URI for use with redirects. By default, full page redirect is
      * assumed. If you are using the generated URI with a window.open() call in
