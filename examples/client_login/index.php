@@ -117,6 +117,10 @@ if ($session) {
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
         'cancel_redirect_uri' => "http://google.com"
     )) . '">Login Flow</a></p>';
+    echo '<p><a id="login-link" href="' . $client->getSignupFlow(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
+        'cancel_redirect_uri' => "http://google.com"
+    )) . '">Signup Flow</a></p>';
     echo '<p><a id="login-link" href="' . $client->getLoginURI(array(
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
         'cancel_redirect_uri' => "http://google.com"

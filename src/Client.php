@@ -822,6 +822,17 @@ class VGS_Client {
         return $this->getUrl('flow', 'login', array_merge($default_params, $params));
     }
 
+    public function getSignupFlow(array $params = array()) {
+        $currentUrl = $this->getCurrentURI();
+        $default_params = array(
+            'client_id' => $this->getClientID(),
+            'response_type' => 'code',
+            'redirect_uri' => $currentUrl,
+        );
+        $default_params['v'] = self::VERSION;
+        return $this->getUrl('flow', 'signup', array_merge($default_params, $params));
+    }
+
     public function getCheckoutFlow(array $params = array()) {
         $currentUrl = $this->getCurrentURI();
         $default_params = array(
