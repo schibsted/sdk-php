@@ -113,11 +113,11 @@ if ($session) {
     echo '<h3 id="message">Please log in</h3>';
     // Show a login link
 
-    echo '<p><a id="login-link" href="' . $client->getLoginFlow(array(
+    echo '<p><a id="login-flow-link" href="' . $client->getLoginFlow(array(
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
         'cancel_redirect_uri' => "http://google.com"
     )) . '">Login Flow</a></p>';
-    echo '<p><a id="login-link" href="' . $client->getSignupFlow(array(
+    echo '<p><a id="signup-flow-link" href="' . $client->getSignupFlow(array(
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
         'cancel_redirect_uri' => "http://google.com"
     )) . '">Signup Flow</a></p>';
@@ -126,7 +126,7 @@ if ($session) {
         'cancel_redirect_uri' => "http://google.com"
     )) . '">Login</a></p>';
 
-    echo '<p><a id="login-link" href="' . $client->getCheckoutFlow(array(
+    echo '<p><a id="checkout-flow-link" href="' . $client->getCheckoutFlow(array(
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
         'cancel_redirect_uri' => "http://google.com"
     )) . '">Purchase Flow</a></p>';
