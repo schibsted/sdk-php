@@ -91,7 +91,7 @@ if ($session) {
     }
     // Show a logout link
     echo '<p><a id="login-link" href="' . $client->getLogoutURI(array('redirect_uri' =>
-        $client->getCurrentURI(array('logout' => 1, 'places'=>'55.43,12.45'), array('error','code'))
+        $client->getCurrentURI(array('logout' => 1), array('error','code'))
     )) . '">Logout</a></p>';
 
 

@@ -1,7 +1,7 @@
 <?php
 $logfile = realpath(dirname(__FILE__)).'/logs/log-'.date("Y-m-d").'.txt';
 
-$file_handle = fopen($logfile, 'ab');
+$file_handle = fopen($logfile, 'a');
 $logger = function($msg) use ($file_handle) {
     if (!fwrite($file_handle, $msg.PHP_EOL)) {
         throw new Exception("FILE LOG FAILED");

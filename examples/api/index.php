@@ -122,6 +122,7 @@ if ($session = $client->getSession()) {
      * ---------------------------------------------------------------------------------------------------------------------
      */
     echo '<br/><strong>/user/'.$client->getUserId().'/order/'.$order_id.': </strong><br/><a href="' . $client->getApiURI('/user/'.$client->getUserId().'/order/'.$order_id). '" target="blank">'. $client->getApiURI('/user/'.$client->getUserId().'/order/'.$order_id).'</a>';
+    $order = array();
     try {
         $order = $client->api('/user/'.$client->getUserId().'/order/'.$order_id);
     } catch (VGS_Client_Exception $e) {
@@ -147,6 +148,7 @@ if ($session = $client->getSession()) {
     echo '<pre>' . print_r($product, true) . '</pre>';
 
     echo '<br/><strong>/products</strong><br/><a href="' . $client->getApiURI('/products'). '" target="blank">'. $client->getApiURI('/products').'</a>';
+    $products = array();
     try {
         $products = $client->api('/products');
     } catch (VGS_Client_Exception $e) {
@@ -194,18 +196,20 @@ if ($session = $client->getSession()) {
 echo '<div id="api-purchase">&nbsp;</div><a href="#top">Back To Top</a>';
 echo '<p><a href="' . $client->getPurchaseURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout')))) . '">Purchase Any Product</a></p>';
 
-foreach((array)$products as $product) {
-    echo '<p><a href="' . $client->getPurchaseURI(array(
-												'product_id'    => $product["productId"],
-												'redirect_uri'  => $client->getCurrentURI(array(), array('logout')))) . '"'.">Purchase Product {$product["productId"]} ({$product["name"]})</a></p>";
-}
+if (isset($products)) {
+    foreach((array)$products as $product) {
+        echo '<p><a href="' . $client->getPurchaseURI(array(
+                                                    'product_id'    => $product["productId"],
+                                                    'redirect_uri'  => $client->getCurrentURI(array(), array('logout')))) . '"'.">Purchase Product {$product["productId"]} ({$product["name"]})</a></p>";
+    }
 
 
-foreach((array)$products as $product) {
-    echo '<p><a href="' . $client->getPurchaseURI(array(
-												'product_id'    => $product["productId"],
-												'display'       => 'popup',
-												'redirect_uri'  => $client->getCurrentURI(array(), array('logout')))) . '&keepThis=true&TB_iframe=true&height=380&width=300" class="thickbox">1 Click Purchase of ' . $product["name"]. '</a></p>';
+    foreach((array)$products as $product) {
+        echo '<p><a href="' . $client->getPurchaseURI(array(
+                                                    'product_id'    => $product["productId"],
+                                                    'display'       => 'popup',
+                                                    'redirect_uri'  => $client->getCurrentURI(array(), array('logout')))) . '&keepThis=true&TB_iframe=true&height=380&width=300" class="thickbox">1 Click Purchase of ' . $product["name"]. '</a></p>';
+    }
 }
 echo '<p><a href="' . $client->getAccountURI() . '">Account page</a></p>';
 echo '<p><a href="' . $client->getPurchaseHistoryURI() . '">Purchase history page</a></p>';
