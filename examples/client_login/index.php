@@ -2,20 +2,6 @@
 
 // Start Session to save oauth token in session (instead of cookie)
 session_start();
-?>
-<!doctype html>
-<html>
-<head>
-    <title>SPiD Client user login and authentication example</title>
-    <meta charset="utf-8">
-</head>
-<body>
-<h1>SPiD Client user login and authentication example</h1>
-<?php
-// May get credential errors
-if (isset($_GET['error'])) {
-    echo '<h3 id="message" style="color:red">'.$_GET['error'].'</h3>';
-}
 
 // Root of php sdk repo
 define('BASE_DIR', realpath('../..'));
@@ -43,6 +29,20 @@ if (isset($_GET['code'])) {
     $_SESSION['sdk'] = $client->getSession();
     header( "Location: ". $client->getCurrentURI(array(), array('code','login','logout'))) ;
     exit;
+}
+?>
+<!doctype html>
+<html>
+<head>
+    <title>SPiD Client user login and authentication example</title>
+    <meta charset="utf-8">
+</head>
+<body>
+<h1>SPiD Client user login and authentication example</h1>
+<?php
+// May get credential errors
+if (isset($_GET['error'])) {
+    echo '<h3 id="message" style="color:red">'.$_GET['error'].'</h3>';
 }
 
 $session = isset($_SESSION['sdk']) ? $_SESSION['sdk'] : false;
