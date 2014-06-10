@@ -21,3 +21,12 @@
     - Added composer.json for dependency deployment
     - Added travis.yml for CI
     - Fixed some typoes and made some improvements to the example files
+
+2014-06-10 v2.3.1
+
+    - Added tests
+    - Added Direct Payment example
+    - Fixed bug on signed requests validation
+    - Fix bug in exception message when not string
+    - Adjusted the composer specification
+
