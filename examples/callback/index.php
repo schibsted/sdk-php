@@ -81,15 +81,15 @@ if ($data && is_array($data)) {
         case 'order' :
             foreach ($data['entry'] as $object) {
                 $logger("Looking up : Order[" .$object['orderId'].']');
-//                $order = $client->api('/order/'.$object['orderId'], 'GET');
-//                $logger("Order:".PHP_EOL.print_r($order, true));
+                $order = $client->api('/order/'.$object['orderId'], 'GET');
+                $logger("Order:".PHP_EOL.print_r($order, true));
             }
             break;
         case 'user' :
             foreach ($data['entry'] as $object) {
                 $logger("Looking up : User[" .$object['userId'].']');
-//                $order = $client->api('/suer/'.$object['userId'], 'GET');
-//                $logger("User:".PHP_EOL.print_r($user, true));
+                $user = $client->api('/user/'.$object['userId'], 'GET');
+                $logger("User:".PHP_EOL.print_r($user, true));
             }
 
             break;
