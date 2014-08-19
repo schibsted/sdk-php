@@ -37,7 +37,7 @@ class VGS_Client {
     /**
      * SDK Version.
      */
-    const VERSION = '2.3';
+    const VERSION = '2.4';
 
     /**
      * Oauth Token URL
@@ -300,6 +300,9 @@ class VGS_Client {
     }
     private function getBaseURL($name = 'www') {
         switch ($name) {
+            case 'flow':
+                return self::getServerURL() . '/flow/';
+                break;
             case 'api':
             case 'api_read':
                 return self::getServerURL() . '/api/' . ($this->api_version == null ? '' : $this->api_version . '/');
@@ -794,19 +797,20 @@ class VGS_Client {
      * @return String the URI for the login flow
      */
     public function getLoginURI($params = array()) {
-        $currentUrl = $this->getCurrentURI();
         $default_params = array(
             'client_id' => $this->getClientID(),
             'response_type' => 'code',
-            'redirect_uri' => $currentUrl,
-            'flow' => 'signup'
+            'redirect_uri' => $this->getCurrentURI(),
         );
+
         if ($this->xiti) {
             $default_params['xiti'] = $this->getXitiConfiguration();
         }
+        
         $default_params['v'] = self::VERSION;
-        return $this->getUrl('www', 'login', array_merge($default_params, $params));
+        return $this->getUrl('flow', 'login', array_merge($default_params, $params));
     }
+
 	/**
      * Get a Signup URI for use with redirects. By default, full page redirect is
      * assumed. If you are using the generated URI with a window.open() call in
@@ -821,18 +825,17 @@ class VGS_Client {
      * @return String the URI for the login flow
      */
     public function getSignupURI($params = array()) {
-        $currentUrl = $this->getCurrentURI();
         $default_params = array(
             'client_id' => $this->getClientID(),
             'response_type' => 'code',
-            'redirect_uri' => $currentUrl,
-            'flow' => 'signup',
+            'redirect_uri' => $this->getCurrentURI(),
+            'signup' => 1,
         );
         if ($this->xiti) {
             $default_params['xiti'] = $this->getXitiConfiguration();
         }
         $default_params['v'] = self::VERSION;
-        return $this->getUrl('www', 'signup', array_merge($default_params, $params));
+        return $this->getUrl('flow', 'signup', array_merge($default_params, $params));
     }
 
     /**
@@ -840,11 +843,10 @@ class VGS_Client {
      * @return String the URI for the account page
      */
     public function getAccountURI($params = array()) {
-        $currentUrl = $this->getCurrentURI();
         $default_params = array(
             'client_id' => $this->getClientID(),
             'response_type' => 'code',
-            'redirect_uri' => $currentUrl,
+            'redirect_uri' => $this->getCurrentURI(),
         );
         if ($this->xiti) {
             $default_params['xiti'] = $this->getXitiConfiguration();
@@ -858,11 +860,10 @@ class VGS_Client {
      * @return String the URI for the purchase history page
      */
     public function getPurchaseHistoryURI($params = array()) {
-        $currentUrl = $this->getCurrentURI();
         $default_params = array(
             'client_id' => $this->getClientID(),
             'response_type' => 'code',
-            'redirect_uri' => $currentUrl,
+            'redirect_uri' => $this->getCurrentURI(),
         );
         if ($this->xiti) {
             $default_params['xiti'] = $this->getXitiConfiguration();
@@ -911,19 +912,16 @@ class VGS_Client {
      */
     public function getPurchaseURI($params = array()) {
         $default_params = array(
-        		'flow'		  => 'payment',
-        		'client_id' => $this->getClientID(),
-        		'response_type' => 'code',
-        		'redirect_uri'=> $this->getCurrentURI(),
+            'client_id' => $this->getClientID(),
+            'response_type' => 'code',
+            'redirect_uri' => $this->getCurrentURI(),
         );
 
         if ($this->xiti) {
             $default_params['xiti'] = $this->getXitiConfiguration();
         }
         $default_params['v'] = self::VERSION;
-
-        $merged_uri = array_merge($default_params, $params);
-        return $this->getUrl('www', 'auth/start', $merged_uri);
+        return $this->getUrl('flow', 'checkout', array_merge($default_params, $params));
     }
 
     /**
