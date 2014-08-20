@@ -804,10 +804,9 @@ class VGS_Client {
         if ($this->xiti) {
             $default_params['xiti'] = $this->getXitiConfiguration();
         }
+        $default_params['v'] = self::VERSION;
 
         $parameters = array_merge($default_params, $params);
-        
-        $default_params['v'] = self::VERSION;
         return $this->getUrl('flow', $flow_name, $parameters);
     }
 
