@@ -128,11 +128,10 @@ class ClientTest extends BaseUnitTest {
     }
 
     public function testGetLoginURI() {
-        $expected = "http://spp.dev/login?" . join($this->client->argSeparator,array(
+        $expected = "http://spp.dev/flow/login?" . join($this->client->argSeparator,array(
             'client_id=' . $this->SPID_CREDENTIALS['client_id'],
             'response_type=code',
             'redirect_uri=' . urlencode('http://' . $this->client->SERVER['HTTP_HOST'] . $this->client->SERVER['REQUEST_URI']),
-            'flow=signup',
             'v=' . TestableClient::VERSION
         ));
         $result = $this->client->getLoginURI();
@@ -144,11 +143,10 @@ class ClientTest extends BaseUnitTest {
     }
 
     public function testGetSingupURI() {
-        $expected = "http://spp.dev/signup?" . join($this->client->argSeparator,array(
+        $expected = "http://spp.dev/flow/signup?" . join($this->client->argSeparator,array(
             'client_id=' . $this->SPID_CREDENTIALS['client_id'],
             'response_type=code',
             'redirect_uri=' . urlencode('http://' . $this->client->SERVER['HTTP_HOST'] . $this->client->SERVER['REQUEST_URI']),
-            'flow=signup',
             'v=' . TestableClient::VERSION
         ));
         $result = $this->client->getSignupURI();
@@ -160,8 +158,7 @@ class ClientTest extends BaseUnitTest {
     }
 
     public function testGetPurchaseURI() {
-        $expected = "http://spp.dev/auth/start?" . join($this->client->argSeparator,array(
-            'flow=payment',
+        $expected = "http://spp.dev/flow/checkout?" . join($this->client->argSeparator,array(
             'client_id=' . $this->SPID_CREDENTIALS['client_id'],
             'response_type=code',
             'redirect_uri=' . urlencode('http://' . $this->client->SERVER['HTTP_HOST'] . $this->client->SERVER['REQUEST_URI']),
@@ -285,8 +282,7 @@ class ClientTest extends BaseUnitTest {
         $expected_xiti_hash = urlencode(strtr(base64_encode(addslashes(gzcompress(serialize(array('xiti' => 'test')),9))), '+/=', '-_,'));
         $this->client->setXitiConfiguration(array('xiti' => 'test'));
 
-        $expected = "http://spp.dev/auth/start?" . join($this->client->argSeparator,array(
-            'flow=payment',
+        $expected = "http://spp.dev/flow/checkout?" . join($this->client->argSeparator,array(
             'client_id=' . $this->SPID_CREDENTIALS['client_id'],
             'response_type=code',
             'redirect_uri=' . urlencode('http://' . $this->client->SERVER['HTTP_HOST'] . $this->client->SERVER['REQUEST_URI']),

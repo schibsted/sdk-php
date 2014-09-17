@@ -74,14 +74,14 @@ if ($session) {
                 $_SESSION['sdk']['access_token'] = $client->getAccessToken();
                 $_SESSION['sdk']['refresh_token'] = $client->getRefreshToken();
                 // Sesssion refreshed with valid tokens
-                header( "Location: ". $client->getCurrentURI(array(), array('code','login','error','logout'))) ;
+                header( "Location: ". $client->getCurrentURI(array(), array('code','login','error','logout', 'order_id', 'spid_page'))) ;
                 exit;
             } catch (Exception $e2) {
                 /* falls back to $e message bellow */
             }
         }
         if ($e->getCode() == 400) {
-            header( "Location: ". $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')))));
+            header( "Location: ". $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')))));
             exit;
         }
 
@@ -89,28 +89,53 @@ if ($session) {
         unset($_SESSION['sdk']);
         echo '<h3 id="error" style="color:red">'.$e->getCode().' : '.$e->getMessage().'</h3>';
     }
+
+    echo '<p><a id="login-link" href="' . $client->getAccountURI(array('redirect_uri' =>
+        $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page'))
+    )) . '">My Account</a></p>';
+
     // Show a logout link
     echo '<p><a id="login-link" href="' . $client->getLogoutURI(array('redirect_uri' =>
-        $client->getCurrentURI(array('logout' => 1), array('error','code'))
+        $client->getCurrentURI(array('logout' => 1), array('error','code', 'order_id', 'spid_page'))
     )) . '">Logout</a></p>';
 
 
-    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array('redirect_uri' =>
-        $client->getCurrentURI(array(), array('logout','error','code'))
-    )) . '">Buy</a></p>';
+    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout', 'error', 'code', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => $client->getCurrentURI(array('cancel'=>1), array('logout', 'error', 'code', 'order_id', 'spid_page')),
+    )) . '">Buy something</a> (standard checkout flow)</p>';
 
-    echo '<p><a id="login-link" href="' . $client->getAccountURI(array('redirect_uri' =>
-        $client->getCurrentURI(array(), array('logout','error','code'))
-    )) . '">My Account</a></p>';
+
+    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
+        // 'tag' => 'taggen98',
+        'campaign_id' => 1, // provide a campaign id
+        // 'product_id' => YYYY,
+        // 'voucher_code' => ZZZZ,
+        'redirect_uri' => $client->getCurrentURI(array('cameback'=>2), array('logout', 'error', 'code', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => $client->getCurrentURI(array('cancel'=>1), array('logout', 'error', 'code', 'order_id', 'spid_page')),
+    )) . '">Campaign Flow</a> (checkout flow with campaign specified</p>';
 
 } else { // No session, user must log in
-
+ 
     echo '<h3 id="message">Please log in</h3>';
     // Show a login link
     echo '<p><a id="login-link" href="' . $client->getLoginURI(array(
-        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
+        'redirect_uri' => $client->getCurrentURI(array('place' => 'oslo'), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => $client->getCurrentURI(array('cancel' => 1), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
+    )) . '">Login</a> (standard auth flow)</p>';
+
+    echo '<h5>or</h5>';
+    echo '<p><a id="signup-flow-link" href="' . $client->getSignupURI(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
         'cancel_redirect_uri' => "http://google.com"
-    )) . '">Login</a></p>';
+    )) . '">Signup Flow</a> (standard auth flow with signup parameter</p>';
+
+    echo '<h5>or</h5>';
+    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
+        'cancel_uri' => $client->getCurrentURI(array('cancel' => 1), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
+    )) . '">Buy</a> (standard checkout flow)</p>';
+
 }
 
 ?>
