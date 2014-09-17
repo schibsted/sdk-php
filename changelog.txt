@@ -30,3 +30,9 @@
     - Fix bug in exception message when not string
     - Adjusted the composer specification
 
+2014-09-17 v2.4
+
+	- Generated urls now go to the new flows in SPiD
+	- Tweaks to client login (SSO) example
+
+
