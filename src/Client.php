@@ -65,6 +65,7 @@ class VGS_Client {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_DNS_CACHE_TIMEOUT => 0,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_USERAGENT => 'spid-php-2.3'
      );
