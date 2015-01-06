@@ -63,11 +63,11 @@ class VGS_Client {
     public static $CURL_OPTS = array(
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_DNS_CACHE_TIMEOUT => 0,
             CURLOPT_TIMEOUT => 30,
-            CURLOPT_USERAGENT => 'spid-php-2.3'
+            CURLOPT_USERAGENT => 'spid-php-2.4'
      );
 
     /**
