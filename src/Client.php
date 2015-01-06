@@ -37,7 +37,7 @@ class VGS_Client {
     /**
      * SDK Version.
      */
-    const VERSION = '2.4';
+    const VERSION = '2.4.1';
 
     /**
      * Oauth Token URL
@@ -66,8 +66,7 @@ class VGS_Client {
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_DNS_CACHE_TIMEOUT => 0,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_USERAGENT => 'spid-php-2.4'
+            CURLOPT_TIMEOUT => 30
      );
 
     /**
@@ -1092,6 +1091,7 @@ class VGS_Client {
             $ch = curl_init();
         }
         $opts = self::$CURL_OPTS;
+        $opts[CURLOPT_USERAGENT] = "spid-php-" . self::VERSION;
         if ($this->useFileUploadSupport()) {
             $opts[CURLOPT_POSTFIELDS] = $params;
         } else {
