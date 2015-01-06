@@ -32,7 +32,13 @@
 
 2014-09-17 v2.4
 
-	- Generated urls now go to the new flows in SPiD
-	- Tweaks to client login (SSO) example
+    - Generated urls now go to the new flows in SPiD
+    - Tweaks to client login (SSO) example
 
 
+2014-10-05 v2.4.2
+
+    - Disabled DNS cache for curl
+    - Changed VERIFYPEER and VERIFYHOST for curl
+    - Changed user agent to include VERSION constant
+    - Indentation and white space fixes, spelling mistakes and PHPDoc fixes

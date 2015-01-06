@@ -37,7 +37,7 @@ class VGS_Client {
     /**
      * SDK Version.
      */
-    const VERSION = '2.4.1';
+    const VERSION = '2.4.2';
 
     /**
      * Oauth Token URL
