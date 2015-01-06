@@ -61,23 +61,23 @@ class VGS_Client {
      * Default options for curl.
      */
     public static $CURL_OPTS = array(
-            CURLOPT_CONNECTTIMEOUT => 5,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_DNS_CACHE_TIMEOUT => 0,
-            CURLOPT_TIMEOUT => 30
-     );
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
+        CURLOPT_DNS_CACHE_TIMEOUT => 0,
+        CURLOPT_TIMEOUT => 30
+    );
 
     /**
      * List of query parameters that get automatically dropped when rebuilding
      * the current URI.
      */
     protected static $DROP_QUERY_PARAMS = array(
-            'code',
-            'error',
-            'session',
-            'signed_request');
+        'code',
+        'error',
+        'session',
+        'signed_request');
 
     /**
      * Contains the raw string result
@@ -99,7 +99,7 @@ class VGS_Client {
     protected $last_result_code = null;
 
     /**
-     * HTTPS comunication ON/OFF
+     * HTTPS communication ON/OFF
      */
     protected $https = true;
 
@@ -173,7 +173,7 @@ class VGS_Client {
      */
     protected $baseDomain = '';
 
-	/**
+    /**
      * Access token (used in server 2 server calls)
      */
     protected $accessToken = false;
@@ -183,7 +183,7 @@ class VGS_Client {
      */
     protected $refreshToken = false;
 
-	/**
+    /**
      * Xiti configuration array
      * Used for tracking analytics between client and service
      */
@@ -233,10 +233,10 @@ class VGS_Client {
         $this->setProduction((boolean) $config['production']);
         $this->https = (isset($config['https']) && $config['https'] == false)?false:true;
         if ($this->production) {
-        	$this->https = true; // always defaults to https on production
+            $this->https = true; // always defaults to https on production
         }
         if (!empty($config['production_domain'])) {
-        	$this->production_domain = $config['production_domain'];
+            $this->production_domain = $config['production_domain'];
         }
         if (!empty($config['staging_domain'])) {
             $this->staging_domain = $config['staging_domain'];
@@ -271,18 +271,18 @@ class VGS_Client {
     public function getDebugInfo() {
         $elapsed = array();
         if ($this->debug) {
-        	if (is_array($this->timer) && count($this->timer) > 0) {
-        		foreach ($this->timer as $function => $entries) {
+            if (is_array($this->timer) && count($this->timer) > 0) {
+                foreach ($this->timer as $function => $entries) {
                     if (is_array($entries['elapsed']) && count($entries['elapsed']) > 0) {
                         $return_vals = (array_sum($entries['elapsed']) / count($entries['elapsed']));
                     } elseif (is_array($entries['elapsed']) && count($entries['elapsed']) == 1) {
                         $return_vals = current($entries['elapsed']);
                     } else {
-                        $return_vals = FALSE;
+                        $return_vals = false;
                     }
-		            $elapsed[$function] = sprintf("%.4f", $return_vals)." seconds";
+                    $elapsed[$function] = sprintf("%.4f", $return_vals)." seconds";
                 }
-        	}
+            }
         }
         return array('Average' => $elapsed,'Times' => $this->timer);
     }
@@ -322,6 +322,7 @@ class VGS_Client {
      * Set the Client ID.
      *
      * @param string $client_id the Client ID
+     * @return VGS_Client
      */
     public function setClientID($client_id) {
         $this->client_id = $client_id;
@@ -341,6 +342,7 @@ class VGS_Client {
      * Set the Context Client ID.
      *
      * @param string $context_client_id the Client ID
+     * @return VGS_Client
      */
     public function setContextClientID($context_client_id) {
         $this->context_client_id = $context_client_id;
@@ -360,6 +362,7 @@ class VGS_Client {
      * Set the Client Secret.
      *
      * @param string $client_secret the Client Secret
+     * @return VGS_Client
      */
     public function setClientSecret($client_secret) {
         $this->client_secret = $client_secret;
@@ -379,6 +382,7 @@ class VGS_Client {
      * Set the Client Signature Secret.
      *
      * @param string $client_sign_secret the Client Secret
+     * @return VGS_Client
      */
     public function setClientSignSecret($client_sign_secret) {
         $this->client_sign_secret = $client_sign_secret;
@@ -407,6 +411,7 @@ class VGS_Client {
      * Set the Redirect URI.
      *
      * @param string $redirect_uri
+     * @return VGS_Client
      */
     public function setRedirectUri($redirect_uri) {
         $this->redirect_uri = $redirect_uri;
@@ -430,6 +435,7 @@ class VGS_Client {
      * Set the Cookie Support status.
      *
      * @param Boolean $cookieSupport the Cookie Support status
+     * @return VGS_Client
      */
     public function setCookieSupport($cookieSupport) {
         $this->cookieSupport = $cookieSupport;
@@ -449,6 +455,7 @@ class VGS_Client {
      * Set the base domain for the Cookie.
      *
      * @param String $domain the base domain
+     * @return VGS_Client
      */
     public function setBaseDomain($domain) {
         $this->baseDomain = $domain;
@@ -468,6 +475,7 @@ class VGS_Client {
      * Set the file upload support status.
      *
      * @param String $domain the base domain
+     * @return VGS_Client
      */
     public function setFileUploadSupport($fileUploadSupport) {
         $this->fileUploadSupport = $fileUploadSupport;
@@ -483,10 +491,11 @@ class VGS_Client {
         return $this->fileUploadSupport;
     }
 
-	/**
+    /**
      * Sets xiti analytics array.
      *
-     * @return void
+     * @param array $config
+     * @return VGS_Client
      */
     public function setXitiConfiguration($config) {
         $this->xiti = array_merge((array) $this->xiti, (array) $config);
@@ -496,7 +505,7 @@ class VGS_Client {
     /**
      * Returns xiti analytics array.
      *
-     * @return 	String Encoded Xiti configuration
+     * @return  String Encoded Xiti configuration
      */
     public function getXitiConfiguration() {
         return $this->encodeSerializedUrlVariable($this->xiti);
@@ -504,19 +513,19 @@ class VGS_Client {
 
     /**
      * Get a paramter from $_REQUEST - overwriteable for testing
-     * 
+     *
      * @param string $param name of key in $_REQUEST array
-     * @return mixed/null 
+     * @return mixed/null
      */
     protected function _getRequestParam($param) {
         return array_key_exists($param, $_REQUEST) ? $_REQUEST[$param] : null;
     }
 
     /**
-     * Get a paramter from $_SERVER - overwriteable for testing
-     * 
+     * Get a parameter from $_SERVER - overwritable for testing
+     *
      * @param string $param name of key in $_SERVER array
-     * @return mixed/null 
+     * @return mixed/null
      */
     protected function _getServerParam($param) {
         return array_key_exists($param, $_SERVER) ? $_SERVER[$param] : null;
@@ -540,9 +549,9 @@ class VGS_Client {
     /**
      * Set the Session.
      *
-     * @param Array $session the session
-     * @param Boolean $write_cookie indicate if a cookie should be written. this
-     * value is ignored if cookie support has been disabled.
+     * @param array $session the session
+     * @param bool $write_cookie indicate if a cookie should be written. Ignored if cookie support is disabled.
+     * @return VGS_Client
      */
     public function setSession($session = null, $write_cookie = true) {
         if ($this->debug) { $start = microtime(true); }
@@ -560,7 +569,7 @@ class VGS_Client {
      * Get the session object. This will automatically look for a signed session
      * sent via the signed_request, Cookie or Query Parameters if needed.
      *
-     * @return Array the session
+     * @return array the session
      */
     public function getSession() {
         if ($this->debug) { $start = microtime(true); }
@@ -612,27 +621,27 @@ class VGS_Client {
 
     /**
      * Get the User ID from the session.
-     * @return String the UID if available
+     * @return string|int the UID if available otherwise 0
      */
     public function getUserId() {
         $session = $this->getSession();
         return $session ? $session['user_id'] : 0;
     }
 
-	/**
+    /**
      * Get all verified emails for the logged in user.
      * @return array
      */
     public function getVerifiedEmails() {
         $emails = array();
         try {
-        	$user = $this->api('/me');
+            $user = $this->api('/me');
             if (isset($user['emails']) && is_array($user['emails']) && count($user['emails']) > 0) {
-            	foreach ($user['emails'] as $key => $value) {
-            		if (isset($value['verified']) && $value['verified'] == true) {
-            			$emails[] = $value['value'];
-            		}
-            	}
+                foreach ($user['emails'] as $key => $value) {
+                    if (isset($value['verified']) && $value['verified'] == true) {
+                        $emails[] = $value['value'];
+                    }
+                }
             }
         } catch (VGS_Client_Exception $e) {
             self::errorLog('Exception thrown when getting logged in user:'. $e->getMessage());
@@ -641,15 +650,21 @@ class VGS_Client {
         return $emails;
     }
 
+    /**
+     * Check if email is verified
+     *
+     * @param string $email
+     * @return bool
+     */
     public function isEmailVerified($email) {
         try {
-        	$user = $this->api('/user/'.$email);
+            $user = $this->api('/user/'.$email);
             if (isset($user['emails']) && is_array($user['emails']) && count($user['emails']) > 0) {
-            	foreach ($user['emails'] as $key => $value) {
-            		if (isset($value['verified']) && $value['verified'] == true && $value['value'] == $email) {
-            			return true;
-            		}
-            	}
+                foreach ($user['emails'] as $key => $value) {
+                    if (isset($value['verified']) && $value['verified'] == true && $value['value'] == $email) {
+                        return true;
+                    }
+                }
             }
         } catch (VGS_Client_Exception $e) {
             self::errorLog('Exception thrown when getting logged in user:'. $e->getMessage());
@@ -660,7 +675,8 @@ class VGS_Client {
     /**
      * Gets a OAuth access token.
      *
-     * @return String the access token
+     * @param string $code
+     * @return string the access token
      */
     public function getAccessToken($code = null) {
         if ($this->debug) { $start = microtime(true); }
@@ -676,7 +692,7 @@ class VGS_Client {
             $access_token = (array) json_decode($this->makeRequest($this->getTokenURL(), $params));
         } else {
             if ($this->accessToken) {
-            	return $this->accessToken;
+                return $this->accessToken;
             } else {
                 $session = $this->getSession();
                 // either user session signed, or app signed
@@ -695,7 +711,8 @@ class VGS_Client {
     /**
      * Gets a Fresh OAuth access token based on a refresh token
      *
-     * @return String the refresh token
+     * @param string $refresh_token
+     * @return string the refresh token
      */
     public function refreshAccessToken($refresh_token = null) {
         $return = array();
@@ -732,11 +749,13 @@ class VGS_Client {
      * do not require an active user. You can obtain an access token for your application using the
      * auth() function. After receiving an access token you can use the api() function for all calls
      * that do not require an active user session.
-     * @return String Oauth Token on success
+     *
+     * @param string|bool $token
+     * @return string Oauth Token on success
      */
     public function auth($token = false) {
         if ($token) {
-        	$this->setAccessToken($token);
+            $this->setAccessToken($token);
         } else {
             $params['client_id']     = $this->getClientID();
             $params['client_secret'] = $this->getClientSecret();
@@ -763,21 +782,23 @@ class VGS_Client {
 
     /**
      * Sets a server to server access code
-     * @param String Oauth Token on success
+     * @param string|bool $token Oauth Token on success
      */
     public function setAccessToken($token = false) {
         $this->accessToken = $token;
     }
+
     /**
      * Sets a server to server refresh token
-     * @param String Oauth Refresh Token on success
+     * @param string|bool $token Oauth Refresh Token on success
      */
     public function setRefreshToken($token = false) {
         $this->refreshToken = $token;
     }
+
     /**
      * Gets the server to server refresh token that was received with the latest access token
-     * @return String Oauth Refresh Token on success
+     * @return string Oauth Refresh Token on success
      */
     public function getRefreshToken() {
         return $this->refreshToken;
@@ -789,6 +810,7 @@ class VGS_Client {
      * @param  string $flow_name name of flow, ie `auth`, `login`, `checkout` etc
      * @param  array  $params get parameters to include in the url, like `cancel_redirect_uri`, `tag` or `redirect_uri`
      * @return string url
+     * @throws VGS_Client_Exception
      */
     public function getFlowURI($flow_name, array $params = array()) {
         if (empty($flow_name)) {
@@ -820,14 +842,14 @@ class VGS_Client {
      * - cancel_url: the URI to go to after the user cancels
      * - display: can be "page" (default, full page) or "popup"
      *
-     * @param Array $params provide custom parameters
-     * @return String the URI for the login flow
+     * @param array $params provide custom parameters
+     * @return string the URI for the login flow
      */
     public function getLoginURI($params = array()) {
         return $this->getFlowURI('login', $params);
     }
 
-	/**
+    /**
      * Get a Signup URI for use with redirects. By default, full page redirect is
      * assumed. If you are using the generated URI with a window.open() call in
      * JavaScript, you can pass in display=popup as part of the $params.
@@ -837,16 +859,18 @@ class VGS_Client {
      * - cancel_url: the URI to go to after the user cancels
      * - display: can be "page" (default, full page) or "popup"
      *
-     * @param Array $params provide custom parameters
-     * @return String the URI for the login flow
+     * @param array $params provide custom parameters
+     * @return string the URI for the login flow
      */
     public function getSignupURI($params = array()) {
         return $this->getFlowURI('signup', $params);
     }
 
     /**
-     * Get the URI for redirecting the user to his VG Konto account page
-     * @return String the URI for the account page
+     * Get the URI for redirecting the user to account page
+     *
+     * @param array $params
+     * @return string the URI for the account page
      */
     public function getAccountURI($params = array()) {
         $default_params = array(
@@ -862,8 +886,10 @@ class VGS_Client {
     }
 
     /**
-     * Get the URI for redirecting the user to his VG Konto purchase history page
-     * @return String the URI for the purchase history page
+     * Get the URI for redirecting the user to purchase history page
+     *
+     * @param array $params
+     * @return string the URI for the purchase history page
      */
     public function getPurchaseHistoryURI($params = array()) {
         $default_params = array(
@@ -880,7 +906,10 @@ class VGS_Client {
 
     /**
      * Get the API URI
-     * @return String the API URI
+     *
+     * @param string $path
+     * @param array $params
+     * @return string the API URI
      */
     public function getApiURI($path, $params = array()) {
         return $this->getUrl('api', $path, array_merge(array('oauth_token' => $this->getAccessToken()),$params));
@@ -892,8 +921,8 @@ class VGS_Client {
      * The parameters:
      * - redirect_uri: the URI to go to after a successful logout
      *
-     * @param Array $params provide custom parameters
-     * @return String the URI for the logout flow
+     * @param array $params provide custom parameters
+     * @return string the URI for the logout flow
      */
     public function getLogoutURI($params = array()) {
         $default_params = array(
@@ -913,7 +942,7 @@ class VGS_Client {
      * The parameters:
      * - product_id: preselect a specific product (skip choose product step)
      *
-     * @param Array $params provide custom parameters
+     * @param array $params provide custom parameters
      * @return string URI to product purchase
      */
     public function getPurchaseURI($params = array()) {
@@ -928,16 +957,16 @@ class VGS_Client {
      * - no_session: the URI to go to if the user is not connected
      * - no_user: the URI to go to if the user is not signed into SPiD
      *
-     * @param Array $params provide custom parameters
-     * @return String the URI for the logout flow
+     * @param array $params provide custom parameters
+     * @return string the URI for the logout flow
      */
     public function getLoginStatusUrl($params = array()) {
         return $this->getUrl('www', 'login_status', array_merge(array(
-                'client_id'       => $this->getClientID(),
-                'no_session'      => $this->getCurrentURI(),
-                'no_user'         => $this->getCurrentURI(),
-                'ok_session'      => $this->getCurrentURI(),
-                'session_version' => 1), $params));
+            'client_id'       => $this->getClientID(),
+            'no_session'      => $this->getCurrentURI(),
+            'no_user'         => $this->getCurrentURI(),
+            'ok_session'      => $this->getCurrentURI(),
+            'session_version' => 1), $params));
     }
 
     /**
@@ -949,17 +978,18 @@ class VGS_Client {
     public function api(/* polymorphic */) {
         $args = func_get_args();
         return call_user_func_array(array(
-                $this,
-                '_restserver'), $args);
+            $this,
+            '_restserver'), $args);
     }
 
     /**
      * Invoke the REST API.
      *
-     * @param String $path the path (required)
-     * @param String $method the http method (default 'GET')
-     * @param Array $params the query/post data
-     * @return the decoded response object
+     * @param string $path the path (required)
+     * @param string $method the http method (default 'GET')
+     * @param array $params the query/post data
+     * @param array $getParams
+     * @return array decoded response object
      * @throws VGS_Client_Exception
      */
     protected function _restserver($path, $method = 'GET', $params = array(), $getParams = array()) {
@@ -1005,7 +1035,7 @@ class VGS_Client {
                     break;
                 // OAuth 2.0 Draft 00 style
                 case 'OAuthException':
-                // OAuth 2.0 Draft 10 style
+                    // OAuth 2.0 Draft 10 style
                 case 'invalid_token':
                     $this->setSession(null);
             }
@@ -1027,37 +1057,46 @@ class VGS_Client {
             return $this->container['meta'];
         }
     }
+
     public function getLastError() {
         if ($this->container && is_array($this->container) && isset($this->container['error'])) {
             return $this->container['error'];
         }
     }
+
     public function getLastDebug() {
         if ($this->container && is_array($this->container) && isset($this->container['debug'])) {
             return $this->container['debug'];
         }
     }
+
     public function getLastContainerType() {
         return ($this->container && is_array($this->container) && isset($this->container['type'])) ? $this->container['type'] : null;
     }
+
     public function getLastContainerObject() {
         return ($this->container && is_array($this->container) && isset($this->container['object'])) ? $this->container['object'] : null;
     }
+
     public function getLastHttpCode() {
         return ($this->container && is_array($this->container) && isset($this->container['code'])) ? $this->container['code'] : null;
     }
+
     public function getLastRequestMeta() {
         return ($this->container && is_array($this->container) && isset($this->container['request'])) ? $this->container['request'] : null;
     }
+
     public function getLastLatency() {
         return $this->latency;
     }
+
     /**
      * Make a OAuth Request
      *
-     * @param String $path the path (required)
-     * @param Array $params the query/post data
-     * @return the decoded response object
+     * @param string $uri the path (required)
+     * @param array $params the query/post data
+     * @param array $getParams
+     * @return array the decoded response object
      * @throws VGS_Client_Exception
      */
     protected function _oauthRequest($uri, $params, $getParams = array()) {
@@ -1080,10 +1119,13 @@ class VGS_Client {
      * developers want to do fancier things or use something other than curl to
      * make the request.
      *
-     * @param String $uri the URI to make the request to
-     * @param Array $params the parameters to use for the POST body
-     * @param CurlHandler $ch optional initialized curl handle
-     * @return String the response text
+     * @param string $uri the URI to make the request to
+     * @param array $params the parameters to use for the POST body
+     * @param resource $ch optional initialized curl handle
+     * @param array $getParams
+     * @return string the response text
+     * @throws VGS_Client_Exception
+     *
      */
     protected function makeRequest($uri, $params, $ch = null, $getParams = array()) {
         $start = microtime(true);
@@ -1096,7 +1138,7 @@ class VGS_Client {
             $opts[CURLOPT_POSTFIELDS] = $params;
         } else {
             if (!isset($getParams['contextClientId']) && $this->getContextClientID()) {
-                 $getParams['contextClientId'] = $this->getContextClientID();
+                $getParams['contextClientId'] = $this->getContextClientID();
             }
             if (isset($getParams['method']) && strtoupper($getParams['method']) == 'GET') {
                 if ($params && is_array($params)) foreach ($params as $k => $v) $getParams[$k] = $v;
@@ -1115,32 +1157,24 @@ class VGS_Client {
             $opts[CURLOPT_HTTPHEADER] = $existing_headers;
         } else {
             $opts[CURLOPT_HTTPHEADER] = array(
-                    'Expect:');
+                'Expect:');
         }
         curl_setopt_array($ch, $opts);
         $result = $this->raw = curl_exec($ch);
         $info   = curl_getinfo($ch);
         $this->last_result_code = $info['http_code'];
 
-        /*
-        if (curl_errno($ch) == 60) { // CURLE_SSL_CACERT
-          self::errorLog('Invalid or no certificate authority found, using bundled information');
-          curl_setopt($ch, CURLOPT_CAINFO,
-                      dirname(__FILE__) . '/vgs_ca_chain_bundle.crt');
-          $result = curl_exec($ch);
-        }
-    	*/
         $this->latency = microtime(true)-$start;
         if ($this->debug) { $this->timer[__FUNCTION__]['elapsed'][] = $this->latency; }
 
         if ($result === false) {
 
             $e = new VGS_Client_Exception(array(
-                    'error_code' => curl_errno($ch),
-                    'error' => array(
-                            'message' => curl_error($ch),
-                            'type' => 'CurlException'
-                    )
+                'error_code' => curl_errno($ch),
+                'error' => array(
+                    'message' => curl_error($ch),
+                    'type' => 'CurlException'
+                )
             ));
             curl_close($ch);
             throw $e;
@@ -1161,7 +1195,7 @@ class VGS_Client {
     /**
      * The name of the Cookie that contains the session.
      *
-     * @return String the cookie name
+     * @return string the cookie name
      */
     protected function getSessionCookieName() {
         return 'vgs_' . $this->getClientID();
@@ -1179,7 +1213,7 @@ class VGS_Client {
      * Set a JS Cookie based on the _passed in_ session. It does not use the
      * currently stored session -- you need to explicitly pass it in.
      *
-     * @param Array $session the session to use for setting the cookie
+     * @param array $session the session to use for setting the cookie
      */
     protected function setCookieFromSession($session = null) {
         if ($this->debug) { $start = microtime(true); }
@@ -1208,9 +1242,9 @@ class VGS_Client {
         }
         if (headers_sent()) {
             self::errorLog('Could not set cookie. Headers already sent.');
-             // ignore for code coverage as we will never be able to setcookie in a CLI
-        // environment
-        // @codeCoverageIgnoreStart
+            // ignore for code coverage as we will never be able to setcookie in a CLI
+            // environment
+            // @codeCoverageIgnoreStart
         } else {
             setcookie($cookieName, $value, $expires_in, '/', $domain);
         }
@@ -1221,8 +1255,8 @@ class VGS_Client {
     /**
      * Validates a session_version=1 style session object.
      *
-     * @param Array $session the session object
-     * @return Array the session object if it validates, null otherwise
+     * @param array $session the session object
+     * @return array|null the session object if it validates, null otherwise
      */
     protected function validateSessionObject($session) {
         // make sure some essential fields exist
@@ -1248,8 +1282,8 @@ class VGS_Client {
      *
      * TODO: Nuke this once the login flow uses OAuth2
      *
-     * @param Array the output of getSignedRequest
-     * @return Array Something that will work as a session
+     * @param array $data the output of getSignedRequest
+     * @return array Something that will work as a session
      */
     protected function createSessionFromSignedRequest($data) {
         if (!isset($data['oauth_token'])) {
@@ -1259,7 +1293,7 @@ class VGS_Client {
             'user_id'         => isset($data['user_id'])?$data['user_id']:0,
             'access_token'    => $data['oauth_token'],
             'expires_in'      => $data['expires_in'],
-        	'server_time'     => $data['server_time'],
+            'server_time'     => $data['server_time'],
         );
         // put a real sig, so that validateSignature works
         $session['sig'] = self::generateSignature($session, $this->getClientSecret());
@@ -1269,8 +1303,8 @@ class VGS_Client {
     /**
      * Signs the session data
      *
-     * @param 	Array Unsigned session
-     * @return 	Array Signed session
+     * @param   array $data Unsigned session
+     * @return  array Signed session
      */
     protected function signSession($data) {
         if (!isset($data['access_token'])) {
@@ -1290,8 +1324,8 @@ class VGS_Client {
 
     /**
      * Used to create outgoing POST data hashes, not for API response signature
-     * 
-     * @param  array $data 
+     *
+     * @param  array $data
      * @return string
      */
     private function recursiveHash($data) {
@@ -1322,8 +1356,8 @@ class VGS_Client {
     /**
      * Parses a signed_request and validates the signature.
      *
-     * @param String A signed token
-     * @return Array the payload inside it or null if the sig is wrong
+     * @param string $signed_request signed token
+     * @return array the payload inside it or null if the sig is wrong
      */
     public function parseSignedRequest($signed_request) {
         list($encoded_sig, $payload) = explode('.', $signed_request, 2);
@@ -1338,7 +1372,7 @@ class VGS_Client {
      * @param  string $encoded_signature
      * @param  string $payload
      * @param  string $algorithm
-     * @return array array of decoded payload or null if invalid signature
+     * @return array decoded payload or null if invalid signature
      */
     public function validateAndDecodeSignedRequest($encoded_signature, $payload, $algorithm = 'HMAC-SHA256') {
         $sig = self::base64UrlDecode($encoded_signature);
@@ -1365,10 +1399,10 @@ class VGS_Client {
     /**
      * Build the URI for given domain alias, path and parameters.
      *
-     * @param $name String the name of the domain
-     * @param $path String optional path (without a leading slash)
-     * @param $params Array optional query parameters
-     * @return String the URI for the given parameters
+     * @param $name string the name of the domain
+     * @param $path string optional path (without a leading slash)
+     * @param $params array optional query parameters
+     * @return string the URI for the given parameters
      */
     protected function getUrl($name, $path = '', $params = array()) {
         $uri = self::getBaseURL($name);
@@ -1388,7 +1422,9 @@ class VGS_Client {
      * Returns the Current URI, stripping it of known parameters that should
      * not persist.
      *
-     * @return String the current URI
+     * @param array $extra_params
+     * @param array $drop_params
+     * @return string the current URI
      */
     public function getCurrentURI($extra_params = array(), $drop_params = array()) {
         $drop_params = array_merge(self::$DROP_QUERY_PARAMS, $drop_params);
@@ -1430,12 +1466,13 @@ class VGS_Client {
     public function getLastResultCode() {
         return $this->last_result_code;
     }
+
     /**
      * Generate a signature for the given params and secret.
      *
-     * @param Array $params the parameters to sign
-     * @param String $secret the secret to sign with
-     * @return String the generated signature
+     * @param array $params the parameters to sign
+     * @param string $secret the secret to sign with
+     * @return string the generated signature
      */
     protected static function generateSignature($params, $secret) {
         // work with sorted data
@@ -1450,9 +1487,9 @@ class VGS_Client {
     }
 
     /**
-     * Prints to the error log if you aren't in command line mode.
+     * Prints to the error log if you are not in command line mode.
      *
-     * @param String log message
+     * @param string $msg log message
      */
     protected static function errorLog($msg) {
         // disable error log if we are running in a CLI environment
@@ -1460,10 +1497,10 @@ class VGS_Client {
         if (php_sapi_name() != 'cli') {
             error_log($msg);
         }
-         // uncomment this if you want to see the errors on the page
-         self::$errors[] = $msg;
-    // print 'error_log: '.$msg."\n";
-    // @codeCoverageIgnoreEnd
+        // uncomment this if you want to see the errors on the page
+        self::$errors[] = $msg;
+        // print 'error_log: '.$msg."\n";
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -1472,7 +1509,8 @@ class VGS_Client {
      * - instead of +
      * _ instead of /
      *
-     * @param String base64UrlEncodeded string
+     * @param string $input base64UrlEncodeded string
+     * @return string
      */
     protected static function base64UrlDecode($input) {
         return base64_decode(strtr($input, '-_', '+/'));
