@@ -1,7 +1,7 @@
-<phpunit bootstrap="test_bootstrap.php">
+<phpunit bootstrap="tests/test_bootstrap.php">
   <testsuites>
     <testsuite name="Unit">
-      <file>unit/ClientTest.php</file>
+      <directory suffix="Test.php">tests/unit</directory>
     </testsuite>
   </testsuites>
   <logging>
@@ -16,7 +16,7 @@
     <whitelist addUncoveredFilesFromWhitelist="true">
       <directory suffix="src/**/*.php">src</directory>
       <exclude>
-        <file>test_bootstrap.php</file>
+        <file>tests/test_bootstrap.php</file>
       </exclude>
     </whitelist>
   </filter>

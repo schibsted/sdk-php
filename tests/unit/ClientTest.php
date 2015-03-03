@@ -212,7 +212,7 @@ class ClientTest extends BaseUnitTest {
             $result = substr($e->getMessage(), 0, strlen($expected));
         }
         $this->assertEquals($expected, $result);
-        
+
         $expected = 'http://spp.dev/api/2/endpoints?oauth_token='.$this->SPID_CREDENTIALS['client_id'];
         $result  = $this->client->getApiURI('/endpoints');
         $this->assertEquals($expected, $result);
@@ -222,7 +222,7 @@ class ClientTest extends BaseUnitTest {
         $expected = 'eNortjKxUipJrShRsgZcMBQ-A2A,';
         $result   = $this->client->encodeSerializedUrlVariable('text');
         $this->assertEquals($expected, $result);
-        
+
         $var = '@LfH>2d%pL@-zGYLPg|*jZr[pSS9uZUy#q>df';
         $expected = strtr(base64_encode(addslashes(gzcompress(serialize($var),9))), '+/=', '-_,');
         $result   = $this->client->encodeSerializedUrlVariable($var);
@@ -241,7 +241,7 @@ class ClientTest extends BaseUnitTest {
         $expected = '456';
         $result   = $this->client->getClientID();
         $this->assertEquals($expected, $result);
-    
+
         $expected = '';
         $result   = $this->client->getContextClientID();
         $this->assertEquals($expected, $result);
@@ -252,7 +252,7 @@ class ClientTest extends BaseUnitTest {
         $expected = '765';
         $result   = $this->client->getContextClientID();
         $this->assertEquals($expected, $result);
-        
+
         $expected = 'foobar';
         $result   = $this->client->getClientSecret();
         $this->assertEquals($expected, $result);
@@ -263,7 +263,7 @@ class ClientTest extends BaseUnitTest {
         $expected = 'apocalypse';
         $result   = $this->client->getClientSecret();
         $this->assertEquals($expected, $result);
-    
+
         $expected = 'foobar';
         $result   = $this->client->getClientSignSecret();
         $this->assertEquals($expected, $result);
@@ -274,7 +274,7 @@ class ClientTest extends BaseUnitTest {
         $expected = 'now';
         $result   = $this->client->getClientSignSecret();
         $this->assertEquals($expected, $result);
-    
+
         $this->client->setClientID('345')->setContextClientID('')->setClientSecret('foobar')->setClientSignSecret('foobar');
     }
 
