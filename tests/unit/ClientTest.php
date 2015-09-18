@@ -122,7 +122,7 @@ class ClientTest extends BaseUnitTest {
         );
         $client = new TestableClient($config);
 
-        $expected = 'https://stage.payment.schibsted.no';
+        $expected = 'https://identity-pre.schibsted.com';
         $result   = $client->getServerURL();
         $this->assertEquals($expected, $result);
     }

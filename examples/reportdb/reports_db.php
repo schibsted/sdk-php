@@ -9,7 +9,7 @@ define('DEBUG', false);
 define('VERBOSE', true);
 
 $config = array(
-    // Config for the SPiD PHP SDK 
+    // Config for the SPiD PHP SDK
     'api' => array(
         VGS_Client::CLIENT_ID       => '<YOUR CLIENT ID HERE>',
         VGS_Client::CLIENT_SECRET   => '<YOUR CLIENT SECRET HERE>',
@@ -17,7 +17,7 @@ $config = array(
         VGS_Client::REDIRECT_URI    => "http://<YOUR URI HERE>",
         // A valid domain for this client
         VGS_Client::DOMAIN          => '<YOUR DOMAIN HERE>',
-        VGS_Client::PRODUCTION      => true, // if false will use stage.payment.schibsted.no
+        VGS_Client::PRODUCTION      => true, // if false will use identity-pre.schibsted.com
     ),
     // Config for the MYSQLI adapter at buttom of file
     'sql' => array(
@@ -27,7 +27,7 @@ $config = array(
     ),
     // Where to store the downloaded dump tars
     'dumps_dir' => '<YOUR PATH HERE>/dumps/',
-    // Where to temporary unpack the dump tars 
+    // Where to temporary unpack the dump tars
     'tmp_dir' => '<YOUR USERNAME HERE>/tmp/',
 );
 
@@ -166,7 +166,7 @@ class Reports {
      * Download dump from api, unpack it
      * Foreach unpacked file, inject it into db and then delete it.
      *
-     * @param int $id 
+     * @param int $id
      * @return boolean false if file exists and it therefore skipped it
      */
     public function dump($id) {
@@ -189,15 +189,15 @@ class Reports {
         chdir(dirname($filename));
         if (exec("/bin/tar -zxvf $filename -C ".$this->tmp_dir, $output)) {
 
-            
+
             $injects = array();
             foreach ($output as $file) {
                 $thisFile = $this->tmp_dir . $file;
                 $unpacked_files[] = $thisFile;
                 if (file_exists($thisFile)) {
                     list($model, ) = explode('-', $file);
-                    
-                    if (isset($this->modelsToTable[$model])) { 
+
+                    if (isset($this->modelsToTable[$model])) {
                         $table = $this->modelsToTable[$model];
                     } else {
                         // or auto guess?

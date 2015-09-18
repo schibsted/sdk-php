@@ -49,7 +49,7 @@ class VGS_Client {
      * Default staging server domain
      * @var string
      */
-    const _VGS_DEFAULT_STAGING_DOMAIN = 'stage.payment.schibsted.no';
+    const _VGS_DEFAULT_STAGING_DOMAIN = 'identity-pre.schibsted.com';
 
     /**
      * Default production server domain
