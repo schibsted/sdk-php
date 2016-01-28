@@ -2,20 +2,6 @@
 
 // Start Session to save oauth token in session (instead of cookie)
 session_start();
-?>
-<!doctype html>
-<html>
-<head>
-    <title>SPiD Client user login and authentication example</title>
-    <meta charset="utf-8">
-</head>
-<body>
-<h1>SPiD Client user login and authentication example</h1>
-<?php
-// May get credential errors
-if (isset($_GET['error'])) {
-    echo '<h3 id="message" style="color:red">'.$_GET['error'].'</h3>';
-}
 
 // Root of php sdk repo
 define('BASE_DIR', realpath('../..'));
@@ -43,6 +29,20 @@ if (isset($_GET['code'])) {
     $_SESSION['sdk'] = $client->getSession();
     header( "Location: ". $client->getCurrentURI(array(), array('code','login','logout'))) ;
     exit;
+}
+?>
+<!doctype html>
+<html>
+<head>
+    <title>SPiD Client user login and authentication example</title>
+    <meta charset="utf-8">
+</head>
+<body>
+<h1>SPiD Client user login and authentication example</h1>
+<?php
+// May get credential errors
+if (isset($_GET['error'])) {
+    echo '<h3 id="message" style="color:red">'.$_GET['error'].'</h3>';
 }
 
 $session = isset($_SESSION['sdk']) ? $_SESSION['sdk'] : false;
@@ -74,14 +74,14 @@ if ($session) {
                 $_SESSION['sdk']['access_token'] = $client->getAccessToken();
                 $_SESSION['sdk']['refresh_token'] = $client->getRefreshToken();
                 // Sesssion refreshed with valid tokens
-                header( "Location: ". $client->getCurrentURI(array(), array('code','login','error','logout'))) ;
+                header( "Location: ". $client->getCurrentURI(array(), array('code','login','error','logout', 'order_id', 'spid_page'))) ;
                 exit;
             } catch (Exception $e2) {
                 /* falls back to $e message bellow */
             }
         }
         if ($e->getCode() == 400) {
-            header( "Location: ". $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')))));
+            header( "Location: ". $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')))));
             exit;
         }
 
@@ -89,24 +89,31 @@ if ($session) {
         unset($_SESSION['sdk']);
         echo '<h3 id="error" style="color:red">'.$e->getCode().' : '.$e->getMessage().'</h3>';
     }
+
+    echo '<p><a id="login-link" href="' . $client->getAccountURI(array('redirect_uri' =>
+        $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page'))
+    )) . '">My Account</a></p>';
+
     // Show a logout link
     echo '<p><a id="login-link" href="' . $client->getLogoutURI(array('redirect_uri' =>
-        $client->getCurrentURI(array('logout' => 1), array('error','code'))
+        $client->getCurrentURI(array('logout' => 1), array('error','code', 'order_id', 'spid_page'))
     )) . '">Logout</a></p>';
 
 
-    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array('redirect_uri' =>
-        $client->getCurrentURI(array(), array('logout','error','code'))
-    )) . '">Buy</a></p>';
+    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout', 'error', 'code', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => $client->getCurrentURI(array('cancel'=>1), array('logout', 'error', 'code', 'order_id', 'spid_page')),
+    )) . '">Buy something</a> (standard checkout flow)</p>';
 
-    echo '<p><a id="login-link" href="' . $client->getAccountURI(array('redirect_uri' =>
-        $client->getCurrentURI(array(), array('logout','error','code'))
-    )) . '">My Account</a></p>';
 
-    echo '<p><a id="login-link" href="' . $client->getCheckoutFlow(array(
-        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
-        'cancel_redirect_uri' => "http://google.com"
-    )) . '">Purchase Flow</a></p>';
+    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
+        // 'tag' => 'taggen98',
+        'campaign_id' => 1, // provide a campaign id
+        // 'product_id' => YYYY,
+        // 'voucher_code' => ZZZZ,
+        'redirect_uri' => $client->getCurrentURI(array('cameback'=>2), array('logout', 'error', 'code', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => $client->getCurrentURI(array('cancel'=>1), array('logout', 'error', 'code', 'order_id', 'spid_page')),
+    )) . '">Campaign Flow</a> (checkout flow with campaign specified</p>';
 
 } else { // No session, user must log in
  
@@ -122,14 +129,22 @@ if ($session) {
         'cancel_redirect_uri' => "http://google.com"
     )) . '">Signup Flow</a></p>';
     echo '<p><a id="login-link" href="' . $client->getLoginURI(array(
-        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
-        'cancel_redirect_uri' => "http://google.com"
-    )) . '">Login</a></p>';
+        'redirect_uri' => $client->getCurrentURI(array('place' => 'oslo'), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => $client->getCurrentURI(array('cancel' => 1), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
+    )) . '">Login</a> (standard auth flow)</p>';
 
-    echo '<p><a id="checkout-flow-link" href="' . $client->getCheckoutFlow(array(
-        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
+    echo '<h5>or</h5>';
+    echo '<p><a id="signup-flow-link" href="' . $client->getSignupURI(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
         'cancel_redirect_uri' => "http://google.com"
-    )) . '">Purchase Flow</a></p>';
+    )) . '">Signup Flow</a> (standard auth flow with signup parameter</p>';
+
+    echo '<h5>or</h5>';
+    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
+        'cancel_uri' => $client->getCurrentURI(array('cancel' => 1), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
+    )) . '">Buy</a> (standard checkout flow)</p>';
+
 }
 
 ?>

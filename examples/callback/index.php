@@ -1,7 +1,7 @@
 <?php
 $logfile = realpath(dirname(__FILE__)).'/logs/log-'.date("Y-m-d").'.txt';
 
-$file_handle = fopen($logfile, 'ab');
+$file_handle = fopen($logfile, 'a');
 $logger = function($msg) use ($file_handle) {
     if (!fwrite($file_handle, $msg.PHP_EOL)) {
         throw new Exception("FILE LOG FAILED");
@@ -81,15 +81,15 @@ if ($data && is_array($data)) {
         case 'order' :
             foreach ($data['entry'] as $object) {
                 $logger("Looking up : Order[" .$object['orderId'].']');
-//                $order = $client->api('/order/'.$object['orderId'], 'GET');
-//                $logger("Order:".PHP_EOL.print_r($order, true));
+                $order = $client->api('/order/'.$object['orderId'], 'GET');
+                $logger("Order:".PHP_EOL.print_r($order, true));
             }
             break;
         case 'user' :
             foreach ($data['entry'] as $object) {
                 $logger("Looking up : User[" .$object['userId'].']');
-//                $order = $client->api('/suer/'.$object['userId'], 'GET');
-//                $logger("User:".PHP_EOL.print_r($user, true));
+                $user = $client->api('/user/'.$object['userId'], 'GET');
+                $logger("User:".PHP_EOL.print_r($user, true));
             }
 
             break;
