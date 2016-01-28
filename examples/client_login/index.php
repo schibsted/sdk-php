@@ -119,15 +119,6 @@ if ($session) {
  
     echo '<h3 id="message">Please log in</h3>';
     // Show a login link
-
-    echo '<p><a id="login-flow-link" href="' . $client->getLoginFlow(array(
-        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
-        'cancel_redirect_uri' => "http://google.com"
-    )) . '">Login Flow</a></p>';
-    echo '<p><a id="signup-flow-link" href="' . $client->getSignupFlow(array(
-        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code')),
-        'cancel_redirect_uri' => "http://google.com"
-    )) . '">Signup Flow</a></p>';
     echo '<p><a id="login-link" href="' . $client->getLoginURI(array(
         'redirect_uri' => $client->getCurrentURI(array('place' => 'oslo'), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
         'cancel_redirect_uri' => $client->getCurrentURI(array('cancel' => 1), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
@@ -140,7 +131,7 @@ if ($session) {
     )) . '">Signup Flow</a> (standard auth flow with signup parameter</p>';
 
     echo '<h5>or</h5>';
-    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
+    echo '<p><a id="checkout-link" href="' . $client->getPurchaseURI(array(
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
         'cancel_uri' => $client->getCurrentURI(array('cancel' => 1), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
     )) . '">Buy</a> (standard checkout flow)</p>';
