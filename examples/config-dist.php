@@ -2,6 +2,11 @@
 
 // Copy this file to a file called config.php and enter your credentials
 
+if ($_SERVER['SERVER_NAME'] == 'testsdk.dev') {
+    include('config-test.php');
+    return;
+}
+
 // Example overwrites REDIRECT_URI so that they can share this config file
 $SPID_CREDENTIALS = array(
     /**

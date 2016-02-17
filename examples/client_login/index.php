@@ -131,7 +131,7 @@ if ($session) {
     )) . '">Signup Flow</a> (standard auth flow with signup parameter</p>';
 
     echo '<h5>or</h5>';
-    echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
+    echo '<p><a id="checkout-link" href="' . $client->getPurchaseURI(array(
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
         'cancel_uri' => $client->getCurrentURI(array('cancel' => 1), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
     )) . '">Buy</a> (standard checkout flow)</p>';

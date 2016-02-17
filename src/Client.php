@@ -999,9 +999,6 @@ class VGS_Client {
             $params = $method;
             $method = 'GET';
         }
-        if ($method == 'PUT') {
-            $method = 'POST';
-        }
         $getParams['method'] = $method; // method override as we always do a POST
         $uri = $this->getUrl('api', $path);
         $result = $this->_oauthRequest($uri, $params, $getParams);
@@ -1101,8 +1098,12 @@ class VGS_Client {
      */
     protected function _oauthRequest($uri, $params, $getParams = array()) {
         if ($this->debug) { $start = microtime(true); }
-        if (!isset($getParams['oauth_token']) && !isset($params['oauth_token'])) {
-            $params['oauth_token'] = $this->getAccessToken();
+
+        if (!isset($getParams['oauth_token']) && isset($params['oauth_token'])) {
+            $getParams['oauth_token'] = $params['oauth_token'];
+        }
+        if (!isset($getParams['oauth_token'])) {
+            $getParams['oauth_token'] = $this->getAccessToken();
         }
         // json_encode all params values that are not strings
         foreach ((array)$params as $key => $value) {
@@ -1134,19 +1135,34 @@ class VGS_Client {
         }
         $opts = self::$CURL_OPTS;
         $opts[CURLOPT_USERAGENT] = "spid-php-" . self::VERSION;
+
         if ($this->useFileUploadSupport()) {
             $opts[CURLOPT_POSTFIELDS] = $params;
         } else {
             if (!isset($getParams['contextClientId']) && $this->getContextClientID()) {
                 $getParams['contextClientId'] = $this->getContextClientID();
             }
-            if (isset($getParams['method']) && strtoupper($getParams['method']) == 'GET') {
-                if ($params && is_array($params)) foreach ($params as $k => $v) $getParams[$k] = $v;
-                $uri = $uri . (strpos($uri, '?') === FALSE ? '?' : '') . http_build_query($getParams, null, '&');
-            } else {
-                $uri = $uri . (strpos($uri, '?') === FALSE ? '?' : '') . http_build_query($getParams, null, '&');
-                $opts[CURLOPT_POSTFIELDS] = http_build_query($params, null, '&');
+
+            // Backwards compatibility defaulting to POST
+            if (!isset($getParams['method'])) {
+                $getParams['method'] = 'POST';
             }
+            switch (strtoupper($getParams['method'])) {
+                case 'GET':
+                    if (is_array($params)) foreach ($params as $k => $v) $getParams[$k] = $v;
+                    break;
+                case 'POST':
+                    $opts[CURLOPT_POSTFIELDS] = http_build_query($params, null, '&');
+                    break;
+                case 'PUT':
+                    $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
+                    $opts[CURLOPT_POSTFIELDS] = http_build_query($params, null, '&');
+                    break;
+                case 'DELETE':
+                    $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+                    break;
+            }
+            $uri = $uri . (strpos($uri, '?') === FALSE ? '?' : '') . http_build_query($getParams, null, '&');
         }
         $opts[CURLOPT_URL] = $uri;
         // disable the 'Expect: 100-continue' behaviour. This causes CURL to wait
