@@ -81,7 +81,8 @@ if ($session) {
             }
         }
         if ($e->getCode() == 400) {
-            header( "Location: ". $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')))));
+            header( "Location: ". $client->getLoginURI(array('redirect_uri' => $client->getCurrentURI(array('vers'=>'url'), array('logout','error','code', 'order_id', 'spid_page')),
+                'cancel_redirect_uri' => $client->getCurrentURI(array('action' => 'cancel', 'vers'=>'url'), array('logout','error','code', 'order_id', 'spid_page')))));
             exit;
         }
 
@@ -115,13 +116,20 @@ if ($session) {
         'cancel_redirect_uri' => $client->getCurrentURI(array('cancel'=>1), array('logout', 'error', 'code', 'order_id', 'spid_page')),
     )) . '">Campaign Flow</a> (checkout flow with campaign specified</p>';
 
+    echo '<h5>or</h5>';
+    echo '<p><a id="profile-flow-link" href="' . $client->getFlowURI('profile', array(
+        'fields' => 'full',
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => "http://google.com"
+    )) . '">Profile Flow</a></p>';
+
 } else { // No session, user must log in
- 
+
     echo '<h3 id="message">Please log in</h3>';
     // Show a login link
     echo '<p><a id="login-link" href="' . $client->getLoginURI(array(
-        'redirect_uri' => $client->getCurrentURI(array('place' => 'oslo'), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
-        'cancel_redirect_uri' => $client->getCurrentURI(array('cancel' => 1), array('logout','error','code', 'default', 'cancel', 'order_id', 'spid_page')),
+        'redirect_uri' => $client->getCurrentURI(array('place' => 'oslo', 'vers'=>'url'), array('logout','error','code', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => $client->getCurrentURI(array('action' => 'cancel', 'vers'=>'url'), array('logout','error','code', 'order_id', 'spid_page'))
     )) . '">Login</a> (standard auth flow)</p>';
 
     echo '<h5>or</h5>';
@@ -129,6 +137,13 @@ if ($session) {
         'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
         'cancel_redirect_uri' => "http://google.com"
     )) . '">Signup Flow</a> (standard auth flow with signup parameter</p>';
+
+    echo '<h5>or</h5>';
+    echo '<p><a id="profile-flow-link" href="' . $client->getFlowURI('profile', array(
+        'fields' => 'full',
+        'redirect_uri' => $client->getCurrentURI(array(), array('logout','error','code', 'order_id', 'spid_page')),
+        'cancel_redirect_uri' => "http://google.com"
+    )) . '">Profile Flow</a></p>';
 
     echo '<h5>or</h5>';
     echo '<p><a id="login-link" href="' . $client->getPurchaseURI(array(
