@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+echo -e "search spid\nnameserver ${SPIDPLATFORM_DNS_1_PORT_53_UDP_ADDR}" >/etc/resolv.conf
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /var/run/apache2/apache2.pid
+
+export APACHE_LOG_DIR=/var/log/httpd/
+exec httpd -DFOREGROUND
