@@ -43,7 +43,7 @@ This command will build `php` Docker image and run its container.
 To install backend dependencies:
 
 ```
-docker exec sdk-dev php composer.phar install
+ocker exec sdk-dev composer install
 ```
 
 
