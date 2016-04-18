@@ -31,7 +31,7 @@ Run `docker-machine start sdk-php` command.
 In the project root directory run the following commands:
 
 ```
-docker build -f Dockerfile . -t sdk-dev
+docker build -f Dockerfile -t sdk-dev .
 ```
 
 ```
