@@ -7,13 +7,10 @@ For information and the development guides see our [techdocs](http://techdocs.sp
 
 This environment uses 1 container.
 
-Container is managed by Docker Compose. The configuration is in `docker-compose.yml`.
-
 
 ### Requirements
 
 - [Docker](https://docs.docker.com/engine/installation/)
-- [Docker Compose](https://docs.docker.com/compose/)
 
 
 #### Mac & Windows
