@@ -31,13 +31,25 @@ Run `docker-machine start sdk-php` command.
 
 #### Start the environment
 
-In the project root directory run the following command:
+In the project root directory run the following commands:
 
 ```
-docker-compose up -d
+docker build -f Dockerfile . -t sdk-dev
+```
+
+```
+docker run -v $(pwd):/var/www/html -p 8080:80 -h sdk.dev -d --name sdk-dev sdk-dev
 ```
 
 This command will build `php` Docker image and run its container.
+
+To install backend dependencies:
+
+```
+docker exec sdk-dev php composer.phar install
+```
+
+
 
 #### Update your hosts
 
