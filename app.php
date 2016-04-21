@@ -13,4 +13,6 @@ Debug::enable();
 require __DIR__.'/config/dev.php';
 require __DIR__ . '/src/routs.php';
 
+//echo phpinfo();exit;
+
 $app->run();

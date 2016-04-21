@@ -6,11 +6,10 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
-class Index
+class Api
 {
     public function index(Request $request, Application $app)
     {
-        return new Response('Index::index!1', 201);
+        return new Response('Api::index!', 201);
     }
 }

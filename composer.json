@@ -13,7 +13,8 @@
     }
   ],
   "autoload": {
-    "psr-0": { "": "src/" }
+     "psr-0": { "": "src/" },
+     "classmap": ["src/Client.php", "src/Client/Exception.php"]
   },
   "require-dev": {
     "phpunit/phpunit": "4.3.*"
