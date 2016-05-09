@@ -1,4 +1,5 @@
 <?php
+define('__ROOT__', dirname(dirname(__FILE__)));
 
 date_default_timezone_set( 'Europe/Warsaw' );
 
