@@ -10,5 +10,5 @@ fi
 
 # Nice option: --testdox
 
-phpunit --colors --stop-on-error --exclude-group disabled --verbose --bootstrap tests/test_bootstrap.php --configuration phpunit.xml $@
+vendor/bin/phpunit --colors --stop-on-error --exclude-group disabled --verbose --bootstrap tests/test_bootstrap.php --configuration phpunit.xml $@
 

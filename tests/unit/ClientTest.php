@@ -279,14 +279,14 @@ class ClientTest extends BaseUnitTest {
     }
 
     public function testXiti() {
-        $expected_xiti_hash = urlencode(strtr(base64_encode(addslashes(gzcompress(serialize(array('xiti' => 'test')),9))), '+/=', '-_,'));
+        $expected_xiti = urlencode(json_encode(array('xiti' => 'test')));
         $this->client->setXitiConfiguration(array('xiti' => 'test'));
 
         $expected = "http://spp.dev/flow/checkout?" . join($this->client->argSeparator,array(
             'client_id=' . $this->SPID_CREDENTIALS['client_id'],
             'response_type=code',
             'redirect_uri=' . urlencode('http://' . $this->client->SERVER['HTTP_HOST'] . $this->client->SERVER['REQUEST_URI']),
-            'xiti=' . $expected_xiti_hash,
+            'xiti_json=' . $expected_xiti,
             'v=' . TestableClient::VERSION
         ));
         $result = $this->client->getPurchaseURI();

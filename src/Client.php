@@ -291,6 +291,10 @@ class VGS_Client {
         return strtr(base64_encode(addslashes(gzcompress(serialize($var),9))), '+/=', '-_,');
     }
 
+    public function encodeJsonUrlVariable($var) {
+        return json_encode($var);
+    }
+
     public function getServerURL() {
         if ($this->isLive()) {
             return (($this->https)?'https://':'http://').$this->production_domain;
@@ -508,7 +512,7 @@ class VGS_Client {
      * @return  String Encoded Xiti configuration
      */
     public function getXitiConfiguration() {
-        return $this->encodeSerializedUrlVariable($this->xiti);
+        return $this->encodeJsonUrlVariable($this->xiti);
     }
 
     /**
@@ -824,7 +828,7 @@ class VGS_Client {
         );
 
         if ($this->xiti) {
-            $default_params['xiti'] = $this->getXitiConfiguration();
+            $default_params['xiti_json'] = $this->getXitiConfiguration();
         }
         $default_params['v'] = self::VERSION;
 
@@ -879,7 +883,7 @@ class VGS_Client {
             'redirect_uri' => $this->getCurrentURI(),
         );
         if ($this->xiti) {
-            $default_params['xiti'] = $this->getXitiConfiguration();
+            $default_params['xiti_json'] = $this->getXitiConfiguration();
         }
         $default_params['v'] = self::VERSION;
         return $this->getUrl('www', 'account', array_merge($default_params, $params));
@@ -898,7 +902,7 @@ class VGS_Client {
             'redirect_uri' => $this->getCurrentURI(),
         );
         if ($this->xiti) {
-            $default_params['xiti'] = $this->getXitiConfiguration();
+            $default_params['xiti_json'] = $this->getXitiConfiguration();
         }
         $default_params['v'] = self::VERSION;
         return $this->getUrl('www', 'account/purchasehistory', array_merge($default_params, $params));
@@ -930,7 +934,7 @@ class VGS_Client {
             'oauth_token' => $this->getAccessToken()
         );
         if ($this->xiti) {
-            $default_params['xiti'] = $this->getXitiConfiguration();
+            $default_params['xiti_json'] = $this->getXitiConfiguration();
         }
         $default_params['v'] = self::VERSION;
         return $this->getUrl('www', 'logout', array_merge($default_params, $params));
