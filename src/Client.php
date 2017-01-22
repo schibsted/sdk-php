@@ -915,7 +915,11 @@ class VGS_Client {
      * @param array $params
      * @return string the API URI
      */
-    public function getApiURI($path, $params = array()) {
+    public function getApiURI($path = '', $params = array()) {
+        if (!$path) {
+          throw new Exception('Missing argument');
+
+        }
         return $this->getUrl('api', $path, array_merge(array('oauth_token' => $this->getAccessToken()),$params));
     }
 
