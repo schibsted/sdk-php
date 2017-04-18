@@ -3,3 +3,4 @@ explorer/config.php
 vendor
 build
 composer.lock
+composer.phar
