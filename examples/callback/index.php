@@ -37,7 +37,7 @@ function parse_signed_request($signed_request, $secret) {
 
   // check sig
   $expected_sig = hash_hmac('sha256', $payload, $secret, true);
-  if ($sig !== $expected_sig) {
+  if (!hash_equals($sig, $expected_sig)) {
     return null;
   }
 

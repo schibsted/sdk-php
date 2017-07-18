@@ -1406,7 +1406,7 @@ class VGS_Client {
                 $expected_sig = hash_hmac('sha256', $payload, $this->getClientSignSecret(), true);
 
                 // check sig
-                if ($sig !== $expected_sig) {
+                if (!hash_equals($sig, $expected_sig)) {
                     self::errorLog('Bad Signed JSON signature!');
                     return null;
                 }
