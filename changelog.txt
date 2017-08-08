@@ -42,3 +42,7 @@
     - Changed VERIFYPEER and VERIFYHOST for curl
     - Changed user agent to include VERSION constant
     - Indentation and white space fixes, spelling mistakes and PHPDoc fixes
+
+2017-08-08 v2.5.1
+
+    - Dropped support for PHP 5.5, minimum required version is PHP 5.6+
