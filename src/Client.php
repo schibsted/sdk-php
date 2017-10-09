@@ -250,7 +250,9 @@ class VGS_Client {
             $this->setClientSignSecret($config[static::CLIENT_SIGN_SECRET]);
         }
 
-        $this->setRedirectUri($config['redirect_uri']);
+        if (isset($config['redirect_uri'])) {
+            $this->setRedirectUri($config['redirect_uri']);
+        }
         if (isset($config['cookie'])) {
             $this->setCookieSupport($config['cookie']);
         }
