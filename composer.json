@@ -1,7 +1,7 @@
 {
   "name": "schibsted/sdk-php",
   "description": "OAuth2 and REST client for connecting and accessing the SPiD API.",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "type": "library",
   "keywords": ["Oauth2","SPiD","REST","API","PHP"],
   "homepage": "https://github.com/schibsted/sdk-php",
