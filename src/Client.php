@@ -33,6 +33,7 @@ class VGS_Client {
     const STAGING_DOMAIN    = 'staging_domain';
     const API_VERSION       = 'api_version';
     const CONTEXT_CLIENT    = 'context_client_id';
+    const REQUEST_ID        = 'request_id';
 
     /**
      * SDK Version.
@@ -194,6 +195,9 @@ class VGS_Client {
      */
     protected $fileUploadSupport = false;
 
+    /** @var string */
+    protected $request_id;
+
     /**
      * URL Argument Separator used by http_build_query
      *
@@ -265,6 +269,9 @@ class VGS_Client {
         }
         if (isset($config[static::CONTEXT_CLIENT])) {
             $this->context_client_id = $config[static::CONTEXT_CLIENT];
+        }
+        if (isset($config[static::REQUEST_ID])) {
+            $this->request_id = $config[static::REQUEST_ID];
         }
     }
 
@@ -1173,6 +1180,7 @@ class VGS_Client {
             $uri = $uri . (strpos($uri, '?') === FALSE ? '?' : '') . http_build_query($getParams, null, '&');
         }
         $opts[CURLOPT_URL] = $uri;
+
         // disable the 'Expect: 100-continue' behaviour. This causes CURL to wait
         // for 2 seconds if the server does not support this header.
         if (isset($opts[CURLOPT_HTTPHEADER])) {
@@ -1180,10 +1188,15 @@ class VGS_Client {
             $existing_headers[] = 'Expect:';
             $opts[CURLOPT_HTTPHEADER] = $existing_headers;
         } else {
-            $opts[CURLOPT_HTTPHEADER] = array(
-                'Expect:');
+            $opts[CURLOPT_HTTPHEADER] = ['Expect:'];
         }
+
+        if (!empty($this->request_id)) {
+            $opts[CURLOPT_HTTPHEADER][] = 'X-Request-Id: ' . $this->request_id;
+        }
+
         curl_setopt_array($ch, $opts);
+
         $result = $this->raw = curl_exec($ch);
         $info   = curl_getinfo($ch);
         $this->last_result_code = $info['http_code'];
